@@ -67,7 +67,7 @@ exports.deleteComment = catchAsync(async (req, res, next) => {
   const comment = await Comment.findByIdAndDelete(req.params.id);
 
   if (!comment) {
-    return next(new AppError('No Review found with that ID', 404));
+    return next(new AppError('No Comment found with that ID', 404));
   }
   res.status(204).json({
     status: 'success',
