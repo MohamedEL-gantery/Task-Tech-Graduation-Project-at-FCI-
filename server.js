@@ -72,9 +72,3 @@ process.on('unhandledRejection', (err) => {
     process.exit(1);
   });
 });
-
-// const GOOGLE_CLIENT_ID =
-//   '887621353924-4je9q83um61ti4q1cmfrug63sfqk8vn9.apps.googleusercontent.com';
-// const GOOGLE_CLIENT_SECRET = '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';
-// const FACEBOOK_CLIENT_ID = '898579204784104';
-// const FACEBOOK_CLIENT_SECRET = '5fd903bc0d1fa6dee7730fb1748ef590';

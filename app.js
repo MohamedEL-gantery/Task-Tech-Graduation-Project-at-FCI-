@@ -2,7 +2,6 @@ const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
-const bodyparser = require('body-parser');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
@@ -12,13 +11,10 @@ const cookieParser = require('cookie-parser');
 const compression = require('compression');
 const passport = require('passport');
 const session = require('express-session');
+const MemoryStore = require('memorystore')(session);
 
 require('./auth/auth-with-google');
 require('./auth/passportFacebook');
-
-// function isLoggedIn(req, res, next) {
-//   req.user ? next() : res.sendStatus(401);
-// }
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./Controllers/errorController');
@@ -31,28 +27,45 @@ const commentRouter = require('./routes/commentRoutes');
 const chatRouter = require('./routes/chatRoutes');
 const messageRouter = require('./routes/messageRoutes');
 const orderRouter = require('./routes/orderRoutes');
+const OrderController = require('./Controllers/orderController');
 
 // Start app
 const app = express();
 
 app.enable('trust proxy');
-// GLOBAL MIDDLEWARES
-app.use(cors());
 
+// Enable other domains to access your application
+app.use(cors());
 app.options('*', cors());
 
-// Serving static files
-app.use(express.static(path.join(__dirname, 'public')));
+/*app.use(
+  session({ resave: false, saveUninitialized: true, secret: 'Task-Tech App' })
+  );*/
 
 //session
 app.use(
-  session({ resave: false, saveUninitialized: true, secret: 'Task-Tech App' })
+  session({
+    cookie: { maxAge: 86400000 },
+    store: new MemoryStore({
+      checkPeriod: 86400000, // prune expired entries every 24h
+    }),
+    resave: false,
+    saveUninitialized: true,
+    secret: 'Task-Tech App',
+  })
 );
+
 app.use(passport.initialize());
 app.use(passport.session());
 
 // Set security HTTP headers
 app.use(helmet());
+
+// development logging
+if (process.env.NODE_ENV === 'development') {
+  //dev env
+  app.use(morgan('dev'));
+}
 
 // Limit requests from same API
 const limiter = rateLimit({
@@ -62,16 +75,19 @@ const limiter = rateLimit({
 });
 app.use('/api', limiter);
 
-// Body parser, reading data from body into req.body
-app.use(express.json({ limit: '10kb' }));
-app.use(express.urlencoded({ extended: true }, { limit: '10kb' }));
+// Stripe webhook, BEFORE body-parser, because stripe needs the body as stream
+app.post(
+  '/webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  OrderController.webhookCheckout
+),
+  // Body parser, reading data from body into req.body
+  app.use(express.json({ limit: '10kb' }));
+app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(cookieParser());
 
-// development logging
-if (process.env.NODE_ENV === 'development') {
-  //dev env
-  app.use(morgan('dev'));
-}
+// Serving static files
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Data sanitization against NoSQL query injection
 app.use(mongoSanitize());
@@ -169,6 +185,7 @@ app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
+// Global error handling middleware for express
 app.use(globalErrorHandler);
 
 module.exports = app;

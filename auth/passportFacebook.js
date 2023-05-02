@@ -2,14 +2,11 @@ const passport = require('passport');
 const FacebookStrategy = require('passport-facebook').Strategy;
 const User = require('../models/userModel');
 
-const FACEBOOK_CLIENT_ID = '898579204784104';
-const FACEBOOK_CLIENT_SECRET = '5fd903bc0d1fa6dee7730fb1748ef590';
-
 passport.use(
   new FacebookStrategy(
     {
-      clientID: FACEBOOK_CLIENT_ID,
-      clientSecret: FACEBOOK_CLIENT_SECRET,
+      clientID: process.env.FACEBOOK_CLIENT_ID,
+      clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
       callbackURL: '/auth/facebook/cb',
     },
     async (accessToken, refreshToken, profile, done) => {
@@ -23,9 +20,9 @@ passport.use(
         const user = await User.create({
           facebookId: profile.id,
           name: profile.displayName,
-          email: 'face@facebook.com',
-          password: '55555555555',
-          confirmPassword: '55555555555',
+          email: process.env.FACEBOOK_EMAIL,
+          password: process.env.PASSWORD_FACEBOOK,
+          confirmPassword: process.env.PASSWORD_FACEBOOK,
         });
         return done(null, profile);
       } else {

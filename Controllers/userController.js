@@ -57,7 +57,7 @@ exports.UserPortfolio = catchAsync(async (req, res, next) => {
   if (req.body.password || req.body.passwordConfirm) {
     return next(
       new AppError(
-        'This route is not for password updates. Please use /updatemypassword.',
+        'This route is not for password updates. Please use /updatemypassword',
         400
       )
     );

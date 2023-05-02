@@ -12,4 +12,16 @@ router.get(
   orderConroller.CheckoutSession
 );
 
+router.use(authController.restrictTo('admin'));
+
+router
+  .route('/')
+  .get(orderConroller.getAllOrder)
+  .post(orderConroller.createOrder);
+
+router
+  .route('/:id')
+  .get(orderConroller.getOneOrder)
+  .patch(orderConroller.updateOrder)
+  .delete(orderConroller.deleteOrder);
 module.exports = router;

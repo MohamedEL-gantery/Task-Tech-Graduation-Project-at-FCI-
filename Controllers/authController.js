@@ -12,7 +12,7 @@ const signToken = (id) => {
   });
 };
 
-const createSendToken = (user, statusCode, req,res) => {
+const createSendToken = (user, statusCode, req, res) => {
   const token = signToken(user._id);
 
   res.cookie('jwt', token, {
@@ -20,7 +20,7 @@ const createSendToken = (user, statusCode, req,res) => {
       Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
     ),
     httpOnly: true,
-    secure: req.secure || req.headers['x-forwarded-proto'] === 'https'
+    secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
   });
 
   // Remove password from output
@@ -30,8 +30,8 @@ const createSendToken = (user, statusCode, req,res) => {
     status: 'success',
     token,
     data: {
-      user
-    }
+      user,
+    },
   });
 };
 
@@ -43,7 +43,7 @@ exports.SignUp = catchAsync(async (req, res, next) => {
     confirmPassword: req.body.confirmPassword,
   });
 
-  createSendToken(newUser, 201, req,res);
+  createSendToken(newUser, 201, req, res);
 });
 
 exports.login = catchAsync(async (req, res, next) => {
@@ -59,7 +59,7 @@ exports.login = catchAsync(async (req, res, next) => {
     return next(new AppError('invalid email or password', 401));
   }
   // 3) If everything ok, send token to client
-  createSendToken(user, 200,req,res);
+  createSendToken(user, 200, req, res);
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
@@ -117,7 +117,7 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
 
   await user.save({ validateBeforeSave: false });
   // Send it to user's email
-  const message = `Hi ${user.name},\n We received a request to reset the password on your TASK-TECH Account. \n ${resetCode} \n Enter this code to complete the reset. \n Thanks for helping us keep your account secure.\n The TASK-TECH Team`;
+  const message = `Hi ${user.name},\n We received a request to reset the password on your TASK-TECH Account. \n ${resetCode} \n Enter this code to complete the reset. \n Thanks for helping us keep your account secure.\n The TASK TECH Team`;
   try {
     await sendEmail({
       email: user.email,
@@ -160,7 +160,7 @@ exports.verifyPasswordResetCode = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
 
   res.status(200).json({
-    status: 'Success',
+    status: 'success',
   });
 });
 
@@ -187,7 +187,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   // 3) if everything is ok, generate token
-  createSendToken(user, 200, req,res);
+  createSendToken(user, 200, req, res);
 });
 
 exports.updatePassword = catchAsync(async (req, res, next) => {
@@ -202,7 +202,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   await user.save();
 
   // if everything is ok, generate token
-  createSendToken(user, 200, req,res);
+  createSendToken(user, 200, req, res);
 });
 
 exports.logout = (req, res) => {

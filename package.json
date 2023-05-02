@@ -4,14 +4,14 @@
   "description": "for job",
   "main": "app.js",
   "scripts": {
+    "start": "node server.js",
     "start:dev": "nodemon server.js",
-    "start:prod": "Set NODE_ENV=production & nodemon server.js"
+    "start:prod": "set NODE_ENV=production & nodemon server.js"
   },
   "author": "mohamed menna",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
-    "body-parser": "^1.20.1",
     "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -24,6 +24,7 @@
     "helmet": "^6.0.1",
     "hpp": "^0.2.3",
     "jsonwebtoken": "^9.0.0",
+    "memorystore": "^1.6.7",
     "mongoose": "^5.13.16",
     "mongoose-findorcreate": "^4.0.0",
     "morgan": "^1.10.0",

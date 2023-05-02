@@ -3,21 +3,15 @@ const GoogleStrategy = require('passport-google-oauth2').Strategy;
 const User = require('./../models/userModel');
 const createSendToken = require('../utils/createToken');
 
-const GOOGLE_CLIENT_ID =
-  '887621353924-4je9q83um61ti4q1cmfrug63sfqk8vn9.apps.googleusercontent.com';
-const GOOGLE_CLIENT_SECRET = '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';
-
 passport.use(
   new GoogleStrategy(
     {
-      clientID: GOOGLE_CLIENT_ID,
-      clientSecret: GOOGLE_CLIENT_SECRET,
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: 'http://localhost:8000/google',
       passReqToCallback: true,
     },
     async (request, accessToken, refreshToken, profile, done) => {
-      //console.log(profile);
-      // console.log(accessToken);
       //find if user exist with this email or not
       const user = await User.findOne({ email: profile.emails[0].value });
       if (!user) {
@@ -27,9 +21,10 @@ passport.use(
           name: profile.displayName,
           googleId: profile.id,
           photo: profile.photos[0].value,
-          password: '55555555',
-          confirmPassword: '55555555',
+          password: process.env.PASSWORD_GOOGLE,
+          confirmPassword: process.env.PASSWORD_GOOGLE,
           accessToken,
+          refreshToken,
         });
         //createSendToken(newuser, 200, res);
         console.log('user saved successfully to DB');
@@ -41,5 +36,3 @@ passport.use(
     }
   )
 );
-
-// async (request, accessToken, refreshToken, profile, done,res)
