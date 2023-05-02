@@ -16,7 +16,7 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
 
   // app settings
   const servicePrice = service.salary;
-  const taxSalary = servicePrice * 0.1;
+  const taxSalary = servicePrice * 0.15;
 
   const totalServicePrice = servicePrice + taxSalary;
 
@@ -24,11 +24,15 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
-        name: `${service.name} `,
-        description: service.description,
-        amount: totalServicePrice * 100,
-        currency: 'usd',
         quantity: 1,
+        price_data: {
+          currency: 'usd',
+          unit_amount: totalServicePrice * 100,
+          product_data: {
+            name: `${service.name} `,
+            description: service.description,
+          },
+        },
       },
     ],
     mode: 'payment',
@@ -47,20 +51,17 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
 });
 
 /* 
- {
+      ///
+      {
+        name: `${service.name} `,
+        description: service.description,
+        amount: totalServicePrice * 100,
+        currency: 'usd',
         quantity: 1,
-        price_data: {
-          currency: 'usd',
-          unit_amount: totalServicePrice * 100,
-          product_data: {
-            name: `${service.name} `,
-            description: service.description,
-          },
-        },
       },
 */
 
-/*const createOrderCheckout = async (session) => {
+const createOrderCheckout = async (session) => {
   const serviceId = session.client_reference_id;
   const service = await Service.findById(serviceId);
   const user = await User.findOne({ email: session.customer_email });
@@ -73,7 +74,7 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
     isPaid: true,
     paidAt: Date.now(),
   });
-};*/
+};
 
 exports.webhookCheckout = async (req, res, next) => {
   const sig = req.headers['stripe-signature'];

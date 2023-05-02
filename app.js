@@ -27,7 +27,7 @@ const commentRouter = require('./routes/commentRoutes');
 const chatRouter = require('./routes/chatRoutes');
 const messageRouter = require('./routes/messageRoutes');
 const orderRouter = require('./routes/orderRoutes');
-const OrderController = require('./Controllers/orderController');
+const { webhookCheckout } = require('./Controllers/orderController');
 
 // Start app
 const app = express();
@@ -79,7 +79,7 @@ app.use('/api', limiter);
 app.post(
   '/webhook-checkout',
   express.raw({ type: 'application/json' }),
-  OrderController.webhookCheckout
+  webhookCheckout
 ),
   // Body parser, reading data from body into req.body
   app.use(express.json({ limit: '10kb' }));
