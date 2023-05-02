@@ -50,7 +50,7 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
   });
 });
 
-const createOrderCheckout = async (session) => {
+/*const createOrderCheckout = async (session) => {
   const serviceId = session.client_reference_id;
   const service = await Service.findById(serviceId);
   const user = await User.findOne({ email: session.customer_email });
@@ -63,7 +63,7 @@ const createOrderCheckout = async (session) => {
     isPaid: true,
     paidAt: Date.now(),
   });
-};
+};*/
 
 exports.webhookCheckout = async (req, res, next) => {
   const sig = req.headers['stripe-signature'];
