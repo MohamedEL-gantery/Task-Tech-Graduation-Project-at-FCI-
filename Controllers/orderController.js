@@ -65,12 +65,12 @@ const createOrderCheckout = async (session) => {
   const serviceId = session.client_reference_id;
   const service = await Service.findById(serviceId);
   const user = await User.findOne({ email: session.customer_email });
-  const ordersalary = session.unit_amount / 100;
+  const salary = session.amount_total / 100;
 
   await Order.create({
     user: user._id,
     service,
-    salary: ordersalary,
+    salary,
     isPaid: true,
     paidAt: Date.now(),
   });
