@@ -24,15 +24,11 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
+        name: `${service.name} `,
+        description: service.description,
+        amount: totalServicePrice * 100,
+        currency: 'usd',
         quantity: 1,
-        price_data: {
-          currency: 'usd',
-          unit_amount: totalServicePrice * 100,
-          product_data: {
-            name: `${service.name} `,
-            description: service.description,
-          },
-        },
       },
     ],
     mode: 'payment',
@@ -49,6 +45,20 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
     session,
   });
 });
+
+/* 
+ {
+        quantity: 1,
+        price_data: {
+          currency: 'usd',
+          unit_amount: totalServicePrice * 100,
+          product_data: {
+            name: `${service.name} `,
+            description: service.description,
+          },
+        },
+      },
+*/
 
 /*const createOrderCheckout = async (session) => {
   const serviceId = session.client_reference_id;
