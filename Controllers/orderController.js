@@ -52,9 +52,7 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
 
 const createOrderCheckout = async (session) => {
   const serviceId = session.client_reference_id;
-  const service = await Service.findById(serviceId)
-    .populate('user')
-    .populate('service');
+  const service = await Service.findById(serviceId);
   const user = await User.findOne({ email: session.customer_email });
   const salary = session.amount_total / 100;
 
