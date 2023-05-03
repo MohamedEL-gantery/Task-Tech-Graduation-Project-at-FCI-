@@ -50,20 +50,11 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
   });
 });
 
-/* 
-      ///
-      {
-        name: `${service.name} `,
-        description: service.description,
-        amount: totalServicePrice * 100,
-        currency: 'usd',
-        quantity: 1,
-      },
-*/
-
 const createOrderCheckout = async (session) => {
   const serviceId = session.client_reference_id;
-  const service = await Service.findById(serviceId);
+  const service = await Service.findById(serviceId)
+    .populate('user')
+    .populate('service');
   const user = await User.findOne({ email: session.customer_email });
   const salary = session.amount_total / 100;
 

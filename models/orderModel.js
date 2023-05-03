@@ -18,9 +18,8 @@ const orderSchema = new mongoose.Schema(
     },
     taxSalary: {
       type: Number,
-      default: 0,
     },
-    paid: {
+    isPaid: {
       type: Boolean,
       default: false,
     },
@@ -35,7 +34,7 @@ orderSchema.pre(/^find/, function (next) {
     select: 'name email phoneNumber location photo',
   }).populate({
     path: 'service',
-    select: 'user name delieveryDate',
+    select: 'user name delieveryDate salary',
   });
   next();
 });

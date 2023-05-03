@@ -58,7 +58,9 @@ const serviceSchema = new mongoose.Schema(
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
 serviceSchema.pre(/^find/, function (next) {
