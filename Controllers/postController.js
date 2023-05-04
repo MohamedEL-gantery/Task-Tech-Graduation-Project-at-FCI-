@@ -111,7 +111,7 @@ exports.updatePost = catchAsync(async (req, res, next) => {
   if (!post) {
     return next(new AppError('No Post found with that ID', 404));
   }
-  if (req.user.id != post.Owner.id) {
+  if (req.user.id != post.user.id) {
     return next(
       new AppError(
         'You do not have permission to perform this action, Only for the owner of this item',
