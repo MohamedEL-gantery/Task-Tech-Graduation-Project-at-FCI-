@@ -111,7 +111,7 @@ exports.updateReview = catchAsync(async (req, res, next) => {
     return next(new AppError('No Review found with that ID', 404));
   }
 
-  if (req.user.id != review.reviewer._id) {
+  if (req.user.id != review.reviewer.id) {
     return next(
       new AppError(
         'You do not have permission to perform this action, Only for the owner of this review',
@@ -141,7 +141,7 @@ exports.deleteReview = catchAsync(async (req, res, next) => {
     return next(new AppError('No Review found with that ID', 404));
   }
 
-  if (req.user.id != review.reviewer._id) {
+  if (req.user.id != review.reviewer.id) {
     return next(
       new AppError(
         'You do not have permission to perform this action, Only for the owner of this review',
