@@ -79,24 +79,16 @@ router.route('/:id/timeline').get(userController.timeline);
 // POST /revieweeId/234fd55/reviews
 // GET /revieweeId/234fd55/reviews
 // GET /revieweeId/234fd55/reviews/9487fd55
-router.use(
-  '/:revieweeId/reviews',
-  authController.restrictTo('user'),
-  reviewRouter
-);
+router.use('/:revieweeId/reviews', reviewRouter);
 
 // POST /userId/234fd55/service
 // GET /userId/234fd55/service
 // GET /userId/234fd55/service/9487fd55
-router.use(
-  '/:userId/service',
-  authController.restrictTo('user'),
-  serviceRouter
-);
+router.use('/:userId/service', serviceRouter);
 
 // POST /userId/234fd55/post
 // GET /userId/234fd55/post
 // GET /userId/234fd55/post/9487fd55
-router.use('/:userId/post', authController.restrictTo('user'), PostRouter);
+router.use('/:userId/post', PostRouter);
 
 module.exports = router;

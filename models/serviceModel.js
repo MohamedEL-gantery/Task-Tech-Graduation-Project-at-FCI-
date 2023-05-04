@@ -18,7 +18,7 @@ const serviceSchema = new mongoose.Schema(
     },
     attachFile: {
       type: String,
-      required: true,
+      required: [true, 'Service Must Have  Attach File'],
     },
     salary: {
       type: Number,
@@ -26,7 +26,7 @@ const serviceSchema = new mongoose.Schema(
     },
     softwareTool: {
       type: [String],
-      required: [true, 'Service Must Have Tools'],
+      required: [true, 'Service Must Have  Software Tool'],
     },
     category: {
       type: String,
@@ -53,13 +53,18 @@ const serviceSchema = new mongoose.Schema(
       ref: 'User',
       required: [true, 'Service Must Belong To User'],
     },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  },
-  {
-    timestamps: true,
   }
 );
 

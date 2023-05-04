@@ -11,15 +11,12 @@ router
   .get(commentController.getAllComments)
   .post(authController.restrictTo('user'), commentController.createComment);
 
+router.get('/:id', commentController.getComment);
+
+router.use(authController.restrictTo('user', 'admin'));
+
 router
   .route('/:id')
-  .get(commentController.getComment)
-  .patch(
-    authController.restrictTo('user', 'admin'),
-    commentController.updateComment
-  )
-  .delete(
-    authController.restrictTo('user', 'admin'),
-    commentController.deleteComment
-  );
+  .patch(commentController.isOwner, commentController.updateComment)
+  .delete(commentController.isOwner, commentController.deleteComment);
 module.exports = router;

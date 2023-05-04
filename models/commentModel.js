@@ -15,12 +15,19 @@ const commentSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: 'Post',
     },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  },
-  { timestamps: true }
+  }
 );
 
 commentSchema.pre(/^find/, function (next) {

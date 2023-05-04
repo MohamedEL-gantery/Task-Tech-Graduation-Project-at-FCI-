@@ -73,12 +73,19 @@ const postSchema = new mongoose.Schema(
       ref: 'User',
       required: [true, 'post Must Belong To User'],
     },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  },
-  { timestamps: true }
+  }
 );
 
 postSchema.index({ salary: -1, delieveryDate: -1 }); //desecending order

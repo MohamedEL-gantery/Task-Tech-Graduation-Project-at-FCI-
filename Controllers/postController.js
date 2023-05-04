@@ -63,7 +63,7 @@ exports.getPost = catchAsync(async (req, res, next) => {
   });
 });
 
-/*exports.Owner = catchAsync(async (req, res, next) => {
+exports.isOwner = catchAsync(async (req, res, next) => {
   // 1) Getting token and check of it's there
   let token;
   if (
@@ -102,7 +102,7 @@ exports.getPost = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   res.locals.user = currentUser;
   next();
-});*/
+});
 
 exports.updatePost = catchAsync(async (req, res, next) => {
   let post;
@@ -132,6 +132,7 @@ exports.updatePost = catchAsync(async (req, res, next) => {
     },
   });
 });
+
 exports.deletePost = catchAsync(async (req, res, next) => {
   let post;
   post = await Post.findById(req.params.id);

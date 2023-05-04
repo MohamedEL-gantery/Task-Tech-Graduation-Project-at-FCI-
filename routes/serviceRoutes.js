@@ -20,12 +20,14 @@ router
   .patch(
     authController.protect,
     authController.restrictTo('user', 'admin'),
+    serviceController.isOwner,
     serviceController.uploadFile,
     serviceController.updateService
   )
   .delete(
     authController.protect,
     authController.restrictTo('user', 'admin'),
+    serviceController.isOwner,
     serviceController.deleteService
   );
 

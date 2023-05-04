@@ -212,13 +212,14 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  },
-  {
-    timestamps: true,
   }
 );
 

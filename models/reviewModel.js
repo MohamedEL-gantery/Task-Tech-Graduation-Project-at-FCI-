@@ -23,12 +23,19 @@ const reviewSchema = new mongoose.Schema(
       ref: 'User',
       required: [true, 'Review must belong to reviewer'],
     },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
-  },
-  { timestamps: true }
+  }
 );
 
 reviewSchema.pre(/^find/, function (next) {

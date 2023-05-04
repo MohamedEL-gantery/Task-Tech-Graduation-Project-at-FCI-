@@ -10,11 +10,7 @@ router.use(authController.protect);
 //POST /post/234fad5/comments
 //GET /post/234fad5/comments
 //GET /post/234fad5/comments/123fds5
-router.use(
-  '/:postId/comments',
-  authController.restrictTo('user'),
-  commentRouter
-);
+router.use('/:postId/comments', commentRouter);
 
 router
   .route('/')
@@ -26,12 +22,13 @@ router.get('/:id', postController.getPost);
 router
   .route('/:id')
   .patch(
-    //  postController.Owner,
     authController.restrictTo('user', 'admin'),
+    postController.isOwner,
     postController.updatePost
   )
   .delete(
     authController.restrictTo('user', 'admin'),
+    postController.isOwner,
     postController.deletePost
   );
 

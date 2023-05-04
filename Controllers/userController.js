@@ -205,7 +205,6 @@ exports.UploadCv = catchAsync(async (req, res, next) => {
   });
 });
 
-// CREATE PROFILE
 exports.updateUser = catchAsync(async (req, res, next) => {
   // 1) Create error if user POSTs password data
   if (req.body.password || req.body.passwordConfirm) {
