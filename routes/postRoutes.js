@@ -26,7 +26,7 @@ router.get('/:id', postController.getPost);
 router
   .route('/:id')
   .patch(
-    postController.Owner,
+    //  postController.Owner,
     authController.restrictTo('user', 'admin'),
     postController.updatePost
   )

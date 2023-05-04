@@ -63,7 +63,7 @@ exports.getPost = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.Owner = catchAsync(async (req, res, next) => {
+/*exports.Owner = catchAsync(async (req, res, next) => {
   // 1) Getting token and check of it's there
   let token;
   if (
@@ -102,7 +102,7 @@ exports.Owner = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   res.locals.user = currentUser;
   next();
-});
+});*/
 
 exports.updatePost = catchAsync(async (req, res, next) => {
   let post;
@@ -114,7 +114,7 @@ exports.updatePost = catchAsync(async (req, res, next) => {
   if (req.user.id != post.user.id) {
     return next(
       new AppError(
-        'You do not have permission to perform this action, Only for the owner of this item',
+        'You do not have permission to perform this action, Only for the owner of this post',
         401
       )
     );
@@ -133,20 +133,23 @@ exports.updatePost = catchAsync(async (req, res, next) => {
   });
 });
 exports.deletePost = catchAsync(async (req, res, next) => {
-  if (req.user.id != post.Owner._id) {
+  let post;
+  post = await Post.findById(req.params.id);
+
+  if (!post) {
+    return next(new AppError('No Post found with that ID', 404));
+  }
+
+  if (req.user.id != post.user.id) {
     return next(
       new AppError(
-        'You do not have permission to perform this action, Only for the owner of this item',
+        'You do not have permission to perform this action, Only for the owner of this post',
         401
       )
     );
   }
 
-  const post = await Post.findByIdAndDelete(req.params.id);
-
-  if (!post) {
-    return next(new AppError('No Post found with that ID', 404));
-  }
+  await Post.findByIdAndDelete(req.params.id);
 
   res.status(204).json({
     status: 'success',
