@@ -21,10 +21,15 @@ router
   .get(postController.getAllPosts)
   .post(authController.restrictTo('user'), postController.createPost);
 
+router.get('/:id', postController.getPost);
+
 router
   .route('/:id')
-  .get(postController.getPost)
-  .patch(authController.restrictTo('user', 'admin'), postController.updatePost)
+  .patch(
+    postController.Owner,
+    authController.restrictTo('user', 'admin'),
+    postController.updatePost
+  )
   .delete(
     authController.restrictTo('user', 'admin'),
     postController.deletePost
