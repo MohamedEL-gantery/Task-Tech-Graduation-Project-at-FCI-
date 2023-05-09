@@ -54,7 +54,9 @@ const postSchema = new mongoose.Schema(
           ) {
             return val > 50 && val <= 70;
           } else if (
-            (this.catogery === 'Business' || 'Product Manager', 'Marketing')
+            this.catogery === 'Business' ||
+            'Product Manager' ||
+            'Marketing'
           ) {
             return val > 70 && val <= 100;
           } else {
