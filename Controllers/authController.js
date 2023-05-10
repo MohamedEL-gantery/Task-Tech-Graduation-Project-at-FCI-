@@ -112,7 +112,7 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
       new AppError(`There is no user with email ${req.body.email}`, 404)
     );
   }
-  // Generate the random Reset Code 4 digest
+  // 2) If user exist, Generate hash reset random 4 digits and save it in db
   const resetCode = user.createPasswordResetCode();
 
   await user.save({ validateBeforeSave: false });

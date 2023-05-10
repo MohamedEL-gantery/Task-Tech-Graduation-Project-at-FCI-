@@ -22,12 +22,18 @@ router.use(authController.protect);
 router.patch('/updatemypassword', authController.updatePassword);
 
 router.patch(
-  '/createprofile/me',
+  '/createprofile/uploadphoto/me',
   authController.restrictTo('user'),
   userController.uploadUserPhoto,
   userController.resizeUserPhoto,
-  userController.uploadUserFile,
-  userController.updateme
+  userController.userPhoto
+);
+
+router.patch(
+  '/createprofile/me',
+  authController.restrictTo('user'),
+  userController.getMe,
+  userController.updateUser
 );
 
 router.patch(

@@ -1,11 +1,13 @@
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const sharp = require('sharp');
 const User = require('../models/userModel');
 const Service = require('../models/serviceModel');
 const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAync');
 const AppError = require('../utils/appError');
-const multer = require('multer');
+const uploadImageController = require('./uploadImageController');
 
 function checkFileType(file, cb) {
   const filetypes = /pdf/;
@@ -39,6 +41,21 @@ const upload = multer({
 });
 
 exports.uploadFile = upload.single('attachFile');
+exports.uploadPhoto = uploadImageController.uploadSingleImage('attachFile');
+
+exports.resizePhoto = catchAsync(async (req, res, next) => {
+  if (!req.file) return next();
+
+  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+
+  await sharp(req.file.buffer)
+    .resize(2000, 1300)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/attachFile/${req.file.filename}`);
+
+  next();
+});
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};

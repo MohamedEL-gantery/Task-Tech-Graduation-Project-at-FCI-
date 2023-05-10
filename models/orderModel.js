@@ -31,7 +31,7 @@ const orderSchema = new mongoose.Schema(
 orderSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'user',
-    select: 'name email phoneNumber location photo',
+    select: 'name email photo',
   }).populate({
     path: 'service',
     select: 'user name delieveryDate salary',

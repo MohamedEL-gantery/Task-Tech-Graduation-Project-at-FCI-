@@ -11,15 +11,6 @@ exports.getMe = (req, res, next) => {
   req.params.id = req.user.id;
   next();
 };
-
-const filterObj = (obj, ...allowedFields) => {
-  const newObj = {};
-  Object.keys(obj).forEach((el) => {
-    if (allowedFields.includes(el)) newObj[el] = obj[el];
-  });
-  return newObj;
-};
-
 // UPLOAD PHOTO FOR PORTFOLIO
 exports.uploadUserPortfolio = uploadImageController.uploadMixOfImages([
   { name: 'images', maxCount: 6 },
@@ -95,6 +86,33 @@ exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   next();
 });
 
+exports.userPhoto = catchAsync(async (req, res, next) => {
+  // 1) Create error if user POSTs password data
+  if (req.body.password || req.body.passwordConfirm) {
+    return next(
+      new AppError(
+        'This route is not for password updates. Please use /updatemypassword',
+        400
+      )
+    );
+  }
+  // 2) Update user document
+  const data = await User.findByIdAndUpdate(
+    req.user.id,
+    { photo: req.body.photo },
+    {
+      new: true, // to return new document
+      runValidators: true,
+    }
+  );
+
+  res.status(200).json({
+    status: 'Success',
+    data: {
+      data,
+    },
+  });
+});
 // UPLOAD CV
 const Storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -130,7 +148,15 @@ const upload = multer({
 
 exports.uploadUserFile = upload.single('cv');
 
-exports.updateme = catchAsync(async (req, res, next) => {
+const filterObj = (obj, ...allowedFields) => {
+  const newObj = {};
+  Object.keys(obj).forEach((el) => {
+    if (allowedFields.includes(el)) newObj[el] = obj[el];
+  });
+  return newObj;
+};
+
+exports.uploadUserCV = catchAsync(async (req, res, next) => {
   // 1) Create error if user POSTs password data
   if (req.body.password || req.body.passwordConfirm) {
     return next(
@@ -141,27 +167,7 @@ exports.updateme = catchAsync(async (req, res, next) => {
     );
   }
   // 2) Filtered
-  const filteredBody = filterObj(
-    req.body,
-    'name',
-    'email',
-    'gender',
-    'age',
-    'birthDate',
-    'phoneNumber',
-    'location',
-    'skills',
-    'education',
-    'photo',
-    'images',
-    'about',
-    'minimum',
-    'maximum',
-    'currency',
-    'ferquency',
-    'catogery',
-    'job'
-  );
+  const filteredBody = filterObj(req.body);
   if (req.file) filteredBody.cv = req.file.filename;
   // 3) Update user document
   const data = await User.findByIdAndUpdate(req.user.id, filteredBody, {

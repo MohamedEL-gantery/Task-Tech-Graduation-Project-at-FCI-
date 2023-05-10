@@ -285,8 +285,8 @@ userSchema.virtual('reviews', {
 
 const setImageURL = (doc) => {
   if (doc.cv) {
-    const imageUrl = `${process.env.BASE_URL}/cv/${doc.imageCover}`;
-    doc.imageCover = imageUrl;
+    const cvUrl = `${process.env.BASE_URL}/cv/${doc.cv}`;
+    doc.cv = cvUrl;
   }
 
   if (doc.images) {

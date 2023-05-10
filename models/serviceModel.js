@@ -76,5 +76,21 @@ serviceSchema.pre(/^find/, function (next) {
   next();
 });
 
+const setImageURL = (doc) => {
+  if (doc.attachFile) {
+    const attachFileUrl = `${process.env.BASE_URL}/attachFile/${doc.attachFile}`;
+    doc.attachFile = attachFileUrl;
+  }
+};
+// findOne, findAll and update
+serviceSchema.post('init', (doc) => {
+  setImageURL(doc);
+});
+
+// create
+serviceSchema.post('save', (doc) => {
+  setImageURL(doc);
+});
+
 const Service = mongoose.model('Service', serviceSchema);
 module.exports = Service;
