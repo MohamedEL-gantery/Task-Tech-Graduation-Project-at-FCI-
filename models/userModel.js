@@ -285,14 +285,16 @@ userSchema.virtual('reviews', {
 
 const setImageURL = (doc) => {
   if (doc.cv) {
-    const cvUrl = `${process.env.BASE_URL}/cv/${doc.cv}`;
+    const cvUrl = `${req.protocol}://${req.get('host')}/cv/${doc.cv}`;
     doc.cv = cvUrl;
   }
 
   if (doc.images) {
     const imagesList = [];
     doc.images.forEach((image) => {
-      const imageUrl = `${process.env.BASE_URL}/portfolio/${image}`;
+      const imageUrl = `${req.protocol}://${req.get(
+        'host'
+      )}/portfolio/${image}`;
       imagesList.push(imageUrl);
     });
     doc.images = imagesList;
