@@ -13,7 +13,7 @@ const serviceSchema = new mongoose.Schema(
       required: [true, 'Service Must Have Description'],
     },
     delieveryDate: {
-      type: Number,
+      type: String,
       required: [true, 'Service Must Have Delievery Date'],
     },
     attachFile: {

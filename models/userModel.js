@@ -284,27 +284,28 @@ userSchema.virtual('reviews', {
 });
 
 const setImageURL = (doc) => {
+  if (doc.photo) {
+    const photoUrl = `${process.env.BASE_URL}/user-photo/${doc.photo}`;
+    doc.photo = photoUrl;
+  }
+
   if (doc.cv) {
-    const cvUrl = `${process.env.BASE_URL}/cv/${doc.cv}`;
+    const cvUrl = `${process.env.BASE_URL}/user-cv/${doc.cv}`;
     doc.cv = cvUrl;
   }
 
   if (doc.images) {
     const imagesList = [];
     doc.images.forEach((image) => {
-      const imageUrl = `${process.env.BASE_URL}/portfolio/${image}`;
+      const imageUrl = `${process.env.BASE_URL}/user-portfolio-photo/${image}`;
       imagesList.push(imageUrl);
     });
     doc.images = imagesList;
   }
 };
+
 // findOne, findAll and update
 userSchema.post('init', (doc) => {
-  setImageURL(doc);
-});
-
-// create
-userSchema.post('save', (doc) => {
   setImageURL(doc);
 });
 

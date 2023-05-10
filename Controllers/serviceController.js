@@ -24,7 +24,7 @@ const Storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const ext = file.mimetype.split('/')[1];
-    cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
+    cb(null, `user-AttachFile-${req.user.id}-${Date.now()}.${ext}`);
   },
 });
 

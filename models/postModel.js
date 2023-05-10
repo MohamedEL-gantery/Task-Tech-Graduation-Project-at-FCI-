@@ -13,7 +13,7 @@ const postSchema = new mongoose.Schema(
       required: [true, 'task must have description'],
     },
     delieveryDate: {
-      type: Number,
+      type: String,
       required: [true, 'task must have delivery Date'],
     },
     softwareTool: {
