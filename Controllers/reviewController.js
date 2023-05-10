@@ -32,15 +32,13 @@ exports.getAllReviews = catchAsync(async (req, res, modelName = '', next) => {
     .search(modelName)
     .paginate(documentsCounts);
 
-  // const reviews = await features.query;
-
   const { query, paginationResult } = features;
   const reviews = await query;
 
   res.status(200).json({
     status: 'success',
-    paginationResult,
     results: reviews.length,
+    paginationResult,
     data: {
       reviews,
     },

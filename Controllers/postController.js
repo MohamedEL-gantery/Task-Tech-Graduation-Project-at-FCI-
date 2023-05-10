@@ -20,31 +20,32 @@ exports.createPost = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getAllPosts = catchAsync(async (req, res, modelName = '', next) => {
-  let filter = {};
-  if (req.params.userId) filter = { user: req.params.userId };
-  const documentsCounts = await Post.countDocuments();
-  //EXCUTE QUERY
-  const features = new APIFeatures(Post.find(filter), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .search(modelName)
-    .paginate(documentsCounts);
+exports.getAllPosts = catchAsync(
+  async (req, res, modelName = 'Posts', next) => {
+    let filter = {};
+    if (req.params.userId) filter = { user: req.params.userId };
+    const documentsCounts = await Post.countDocuments();
+    //EXCUTE QUERY
+    const features = new APIFeatures(Post.find(filter), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .search(modelName)
+      .paginate(documentsCounts);
 
-  //const posts = await features.query;
-  const { query, paginationResult } = features;
-  const posts = await query;
+    const { query, paginationResult } = features;
+    const posts = await query;
 
-  res.status(200).json({
-    status: 'success',
-    results: posts.length,
-    paginationResult,
-    data: {
-      posts,
-    },
-  });
-});
+    res.status(200).json({
+      status: 'success',
+      results: posts.length,
+      paginationResult,
+      data: {
+        posts,
+      },
+    });
+  }
+);
 
 exports.getPost = catchAsync(async (req, res, next) => {
   const post = await Post.findById(req.params.id)

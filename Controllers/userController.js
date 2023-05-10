@@ -5,29 +5,25 @@ const Post = require('../models/postModel');
 const catchAsync = require('../utils/catchAync');
 const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/apiFeatures');
+const uploadImageController = require('./uploadImageController');
 
 exports.getMe = (req, res, next) => {
   req.params.id = req.user.id;
   next();
 };
 
-const multerStorage = multer.memoryStorage();
-
-const multerFilter = (req, file, cb) => {
-  if (file.mimetype.startsWith('image')) {
-    cb(null, true);
-  } else {
-    cb(new AppError('Not an image! Please upload only images', 400), false);
-  }
+const filterObj = (obj, ...allowedFields) => {
+  const newObj = {};
+  Object.keys(obj).forEach((el) => {
+    if (allowedFields.includes(el)) newObj[el] = obj[el];
+  });
+  return newObj;
 };
 
-const upload = multer({
-  storage: multerStorage,
-  fileFilter: multerFilter,
-});
-
 // UPLOAD PHOTO FOR PORTFOLIO
-exports.uploadUserPortfolio = upload.fields([{ name: 'images', maxCount: 6 }]);
+exports.uploadUserPortfolio = uploadImageController.uploadMixOfImages([
+  { name: 'images', maxCount: 6 },
+]);
 // Filter
 exports.resizePortfolioImages = catchAsync(async (req, res, next) => {
   if (!req.files.images) return next();
@@ -44,7 +40,7 @@ exports.resizePortfolioImages = catchAsync(async (req, res, next) => {
         .resize(800, 800)
         .toFormat('jpeg')
         .jpeg({ quality: 90 })
-        .toFile(`public/img/portfolio/${filename}`);
+        .toFile(`public/portfolio/${filename}`);
 
       req.body.images.push(filename);
     })
@@ -80,73 +76,29 @@ exports.UserPortfolio = catchAsync(async (req, res, next) => {
   });
 });
 
-const filterObj = (obj, ...allowedFields) => {
-  const newObj = {};
-  Object.keys(obj).forEach((el) => {
-    if (allowedFields.includes(el)) newObj[el] = obj[el];
-  });
-  return newObj;
-};
-
 // UPLOAD USER PHOTO
-exports.uploadUserPhoto = upload.single('photo');
+exports.uploadUserPhoto = uploadImageController.uploadSingleImage('photo');
 
-// Filter
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
 
-  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+  const filename = `user-${req.user.id}-${Date.now()}.jpeg`;
 
   await sharp(req.file.buffer)
     .resize(500, 500)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
-    .toFile(`public/img/users/${req.file.filename}`);
+    .toFile(`public/users/${filename}`);
+
+  req.body.photo = filename;
 
   next();
-});
-
-exports.UserPhoto = catchAsync(async (req, res, next) => {
-  // 1) Create error if user POSTs password data
-  if (req.body.password || req.body.passwordConfirm) {
-    return next(
-      new AppError(
-        'This route is not for password updates. Please use /updatemypassword.',
-        400
-      )
-    );
-  }
-  // 2) Filtered
-  const filteredBody = filterObj(
-    req.body,
-    'name',
-    'email',
-    'gender',
-    'age',
-    'birthDate',
-    'location',
-    'phoneNumber',
-    'skills'
-  );
-  if (req.file) filteredBody.photo = req.file.filename;
-  // 3) Update user document
-  const data = await User.findByIdAndUpdate(req.user.id, filteredBody, {
-    new: true, // to return new document
-    runValidators: true,
-  });
-
-  res.status(200).json({
-    status: 'Success',
-    data: {
-      data,
-    },
-  });
 });
 
 // UPLOAD CV
 const Storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'public/img/cv');
+    cb(null, 'public/cv');
   },
   filename: (req, file, cb) => {
     const ext = file.mimetype.split('/')[1];
@@ -168,7 +120,7 @@ function checkFileType(file, cb) {
 
 const maxSize = 2 * 1024 * 1024;
 
-const uploadFile = multer({
+const upload = multer({
   storage: Storage,
   limits: { fileSize: maxSize },
   fileFilter: function (req, file, cb) {
@@ -176,9 +128,9 @@ const uploadFile = multer({
   },
 });
 
-exports.uploadUserFile = uploadFile.single('cv');
+exports.uploadUserFile = upload.single('cv');
 
-exports.UploadCv = catchAsync(async (req, res, next) => {
+exports.updateme = catchAsync(async (req, res, next) => {
   // 1) Create error if user POSTs password data
   if (req.body.password || req.body.passwordConfirm) {
     return next(
@@ -189,7 +141,27 @@ exports.UploadCv = catchAsync(async (req, res, next) => {
     );
   }
   // 2) Filtered
-  const filteredBody = filterObj(req.body, 'education');
+  const filteredBody = filterObj(
+    req.body,
+    'name',
+    'email',
+    'gender',
+    'age',
+    'birthDate',
+    'phoneNumber',
+    'location',
+    'skills',
+    'education',
+    'photo',
+    'images',
+    'about',
+    'minimum',
+    'maximum',
+    'currency',
+    'ferquency',
+    'catogery',
+    'job'
+  );
   if (req.file) filteredBody.cv = req.file.filename;
   // 3) Update user document
   const data = await User.findByIdAndUpdate(req.user.id, filteredBody, {
@@ -252,7 +224,7 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getAllUser = catchAsync(async (req, res, modelName = '', next) => {
+exports.getAllUser = catchAsync(async (req, res, modelName = 'Users', next) => {
   const documentsCounts = await User.countDocuments();
   const features = new APIFeatures(User.find(), req.query)
     .filter()
@@ -261,15 +233,13 @@ exports.getAllUser = catchAsync(async (req, res, modelName = '', next) => {
     .search(modelName)
     .paginate(documentsCounts);
 
-  // const data = await features.query;
-
   const { query, paginationResult } = features;
   const data = await query;
 
   res.status(200).json({
     status: 'success',
-    paginationResult,
     results: data.length,
+    paginationResult,
     data: {
       data,
     },

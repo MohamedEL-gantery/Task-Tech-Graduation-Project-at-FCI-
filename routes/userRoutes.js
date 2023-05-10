@@ -24,23 +24,10 @@ router.patch('/updatemypassword', authController.updatePassword);
 router.patch(
   '/createprofile/me',
   authController.restrictTo('user'),
-  userController.getMe,
-  userController.updateUser
-);
-
-router.patch(
-  '/createprofile/uploadphoto/me',
-  authController.restrictTo('user'),
   userController.uploadUserPhoto,
   userController.resizeUserPhoto,
-  userController.UserPhoto
-);
-
-router.patch(
-  '/createprofile/uploadcv/me',
-  authController.restrictTo('user'),
   userController.uploadUserFile,
-  userController.UploadCv
+  userController.updateme
 );
 
 router.patch(

@@ -43,7 +43,7 @@ class APIFeatures {
   search(modelName) {
     if (this.queryString.keyword) {
       let queryN = {};
-      if (modelName === 'User' || 'Post' || 'Service') {
+      if (modelName === 'Users' || 'Posts' || 'Services') {
         queryN.$or = [
           { name: { $regex: this.queryString.keyword, $options: 'i' } },
           { description: { $regex: this.queryString.keyword, $options: 'i' } },

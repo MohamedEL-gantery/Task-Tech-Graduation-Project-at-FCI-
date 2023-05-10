@@ -109,8 +109,8 @@ exports.getAllOrder = catchAsync(async (req, res, modelName = '', next) => {
 
   res.status(200).json({
     status: 'success',
-    paginationResult,
     results: order.length,
+    paginationResult,
     order,
   });
 });

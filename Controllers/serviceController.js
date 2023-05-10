@@ -20,7 +20,7 @@ function checkFileType(file, cb) {
 
 const Storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'public/img/attachFile');
+    cb(null, 'public/attachFile');
   },
   filename: (req, file, cb) => {
     const ext = file.mimetype.split('/')[1];
@@ -74,32 +74,32 @@ exports.createService = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getAllService = catchAsync(async (req, res, modelName = '', next) => {
-  let filter = {};
-  if (req.params.userId) filter = { user: req.params.userId };
-  const documentsCounts = await Service.countDocuments();
-  //EXCUTE QUERY
-  const features = new APIFeatures(Service.find(filter), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .search(modelName)
-    .paginate(documentsCounts);
+exports.getAllService = catchAsync(
+  async (req, res, modelName = 'Services', next) => {
+    let filter = {};
+    if (req.params.userId) filter = { user: req.params.userId };
+    const documentsCounts = await Service.countDocuments();
+    //EXCUTE QUERY
+    const features = new APIFeatures(Service.find(filter), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .search(modelName)
+      .paginate(documentsCounts);
 
-  // const service = await features.query;
+    const { query, paginationResult } = features;
+    const service = await query;
 
-  const { query, paginationResult } = features;
-  const service = await query;
-
-  res.status(200).json({
-    status: 'success',
-    paginationResult,
-    results: service.length,
-    data: {
-      service,
-    },
-  });
-});
+    res.status(200).json({
+      status: 'success',
+      results: service.length,
+      paginationResult,
+      data: {
+        service,
+      },
+    });
+  }
+);
 
 exports.getService = catchAsync(async (req, res, next) => {
   const service = await Service.findById(req.params.id).populate('user');
