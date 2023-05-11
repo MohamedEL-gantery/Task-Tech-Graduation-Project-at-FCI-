@@ -46,25 +46,17 @@ const postSchema = new mongoose.Schema(
       validate: {
         validator: function (val) {
           //this only points to current doc on New document creation
-          if (
-            this.catogery === 'Web Design' ||
-            'Ui/Ux Design' ||
-            'Graphics Designer'
-          ) {
-            return val > 50 && val <= 70;
-          } else if (
-            this.catogery === 'Business' ||
-            'Product Manager' ||
-            'Marketing'
-          ) {
-            return val > 70 && val <= 100;
+          if (this.catogery === 'Web Design' || 'Ui/Ux Design') {
+            return val >= 50 && val <= 70;
+          } else if (this.catogery === 'Graphics Designer' || 'Marketing') {
+            return val >= 70 && val <= 90;
+          } else if (this.catogery === 'Business' || 'Accountant') {
+            return val >= 90 && val <= 110;
+          } else if (this.catogery === 'Web Developer' || 'App Developer') {
+            return val >= 110 && val <= 130;
           } else {
-            this.catogery === 'Software Engineering' ||
-              'App Developer' ||
-              'Accountant' ||
-              'Web Developer';
-
-            return val >= 60 && val <= 120;
+            this.catogery === 'Product Manager' || 'Software Engineering';
+            return val >= 130 && val <= 150;
           }
         },
         message: 'the salary of this task have a specific range',
