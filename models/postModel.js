@@ -52,14 +52,22 @@ const postSchema = new mongoose.Schema(
             'Graphics Designer'
           ) {
             return val > 50 && val <= 70;
-          } else if (
+          }
+          if (
             this.catogery === 'Business' ||
             'Product Manager' ||
             'Marketing'
           ) {
             return val > 70 && val <= 100;
-          } else {
-            return val >= 60 && val <= 120;
+          }
+          if (
+            (this.catogery =
+              'Software Engineering' ||
+              'App Developer' ||
+              'Accountant' ||
+              'Web Developer')
+          ) {
+            return val >= 100 && val <= 120;
           }
         },
         message: 'the salary of this task have a specific range',
