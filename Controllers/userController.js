@@ -114,7 +114,7 @@ exports.userPhoto = catchAsync(async (req, res, next) => {
 // UPLOAD CV
 const Storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, '/public/cv');
+    cb(null, 'public/cv');
   },
   filename: (req, file, cb) => {
     const ext = file.mimetype.split('/')[1];
