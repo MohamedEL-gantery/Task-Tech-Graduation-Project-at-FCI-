@@ -24,7 +24,7 @@ const Storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     const ext = file.mimetype.split('/')[1];
-    cb(null, `user-AttachFile-${req.user.id}-${Date.now()}.${ext}`);
+    cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
   },
 });
 
@@ -88,14 +88,14 @@ exports.getAllService = catchAsync(
       .paginate(documentsCounts);
 
     const { query, paginationResult } = features;
-    const service = await query;
+    const services = await query;
 
     res.status(200).json({
       status: 'success',
-      results: service.length,
+      results: services.length,
       paginationResult,
       data: {
-        service,
+        services,
       },
     });
   }

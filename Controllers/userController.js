@@ -23,9 +23,7 @@ exports.resizePortfolioImages = catchAsync(async (req, res, next) => {
 
   await Promise.all(
     req.files.images.map(async (file, i) => {
-      const filename = `userportfolio-${req.user.id}-${Date.now()}-${
-        i + 1
-      }.jpeg`;
+      const filename = `user-${req.user.id}-${Date.now()}-${i + 1}.jpeg`;
 
       await sharp(file.buffer)
         .resize(800, 800)
@@ -54,7 +52,7 @@ exports.UserPortfolio = catchAsync(async (req, res, next) => {
     req.user.id,
     { images: req.body.images },
     {
-      new: true,
+      new: true, // to return new document
       runValidators: true,
     }
   );
@@ -116,11 +114,11 @@ exports.userPhoto = catchAsync(async (req, res, next) => {
 // UPLOAD CV
 const Storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'public/cv');
+    cb(null, '/public/cv');
   },
   filename: (req, file, cb) => {
     const ext = file.mimetype.split('/')[1];
-    cb(null, `user-cv-${req.user.id}-${Date.now()}.${ext}`);
+    cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
   },
 });
 
@@ -199,6 +197,10 @@ exports.updateUser = catchAsync(async (req, res, next) => {
     runValidators: true,
   });
 
+  if (!data) {
+    return next(new AppError('No User Found With That Id', 404));
+  }
+
   res.status(200).json({
     status: 'Success',
     data: {
@@ -211,7 +213,7 @@ exports.getUser = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.params.id).populate('reviews');
 
   if (!user) {
-    return next(new AppError('no user found with that id', 404));
+    return next(new AppError('No User Found With That Id', 404));
   }
   res.status(200).json({
     status: 'success',
@@ -240,23 +242,23 @@ exports.getAllUser = catchAsync(async (req, res, modelName = 'Users', next) => {
     .paginate(documentsCounts);
 
   const { query, paginationResult } = features;
-  const data = await query;
+  const users = await query;
 
   res.status(200).json({
     status: 'success',
-    results: data.length,
+    results: users.length,
     paginationResult,
     data: {
-      data,
+      users,
     },
   });
 });
 
 exports.deleteUser = catchAsync(async (req, res, next) => {
-  const data = await User.findByIdAndDelete(req.params.id);
+  const user = await User.findByIdAndDelete(req.params.id);
 
-  if (!data) {
-    return next(new AppError('No User found with that ID', 404));
+  if (!user) {
+    return next(new AppError('No User Found With That Id', 404));
   }
 
   res.status(204).json({
@@ -287,10 +289,10 @@ exports.followUser = catchAsync(async (req, res, next) => {
         message: 'user has been followed',
       });
     } else {
-      return next(new AppError('you already follow this user', 404));
+      return next(new AppError('You Already Follow This User', 404));
     }
   } else {
-    return next(new AppError('you can not follow yourself', 404));
+    return next(new AppError('You Can Not Follow Yourself', 404));
   }
 });
 
@@ -309,10 +311,10 @@ exports.unFollowUser = catchAsync(async (req, res, next) => {
         message: 'user has been unfollowed',
       });
     } else {
-      return next(new AppError('you donnot follow this user', 404));
+      return next(new AppError('You Can Not Follow This User', 404));
     }
   } else {
-    return next(new AppError('you can not unfollow yourself', 404));
+    return next(new AppError('You Can Not Unfollow Yourself', 404));
   }
 });
 

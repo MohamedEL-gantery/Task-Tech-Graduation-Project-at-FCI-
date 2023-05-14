@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema(
       required: [true, ' User Must Have A Email'],
       unique: true,
       lowercase: true,
-      validate: [validator.isEmail, 'Please provide a valid email']
+      validate: [validator.isEmail, 'Please provide a valid email'],
     },
     password: {
       type: String,
@@ -286,19 +286,19 @@ userSchema.virtual('reviews', {
 
 const setImageURL = (doc) => {
   if (doc.photo) {
-    const photoUrl = `${process.env.BASE_URL}/user-photo/${doc.photo}`;
+    const photoUrl = `${process.env.BASE_URL}/photo/${doc.photo}`;
     doc.photo = photoUrl;
   }
 
   if (doc.cv) {
-    const cvUrl = `${process.env.BASE_URL}/user-cv/${doc.cv}`;
+    const cvUrl = `${process.env.BASE_URL}/cv/${doc.cv}`;
     doc.cv = cvUrl;
   }
 
   if (doc.images) {
     const imagesList = [];
     doc.images.forEach((image) => {
-      const imageUrl = `${process.env.BASE_URL}/user-portfolio-photo/${image}`;
+      const imageUrl = `${process.env.BASE_URL}/portfolio/${image}`;
       imagesList.push(imageUrl);
     });
     doc.images = imagesList;
