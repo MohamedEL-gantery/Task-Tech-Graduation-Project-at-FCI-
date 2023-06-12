@@ -129,7 +129,7 @@ exports.verfiySignUp = catchAsync(async (req, res, next) => {
 
   // 2) Reset code valid
   await user.save({ validateBeforeSave: false });
-  createSendToken(user, 201, res);
+  createSendToken(user, 201, req, res);
 });
 
 /*exports.SignUp = catchAsync(async (req, res, next) => {
