@@ -85,7 +85,16 @@ exports.verfiySignUp = catchAsync(async (req, res, next) => {
     .update(req.body.resetCode)
     .digest('hex');
 
-  const currentToken = req.headers.authorization.split(' ')[1];
+  let currentToken;
+
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    currentToken = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.jwt) {
+    currentToken = req.cookies.jwt;
+  }
 
   // 2) Verification token.
   const decoded = await promisify(jwt.verify)(
