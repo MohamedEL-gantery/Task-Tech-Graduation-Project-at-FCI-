@@ -47,7 +47,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   // 2) Generate the random reset token
   const resetCode = newUser.generateVerificationCode();
   const token = signToken(newUser._id);
-  await newUser.save();
+  await newUser.save({ validateBeforeSave: false });
 
   // 3) Send it to newUser's email
   const message = `Hi ${newUser.name},\n We received a request to signup on TASK-TECH. \n ${resetCode} \n Enter this code to complete the signup. \n The TASK TECH Team`;
@@ -68,7 +68,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     newUser.ResetCode = undefined;
     newUser.ResetExpires = undefined;
     newUser.ResetVerified = undefined;
-    await newUser.save();
+    await newUser.save({ validateBeforeSave: false });
 
     return next(
       new AppError('There was an error sending the email. Try again later!'),
