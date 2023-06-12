@@ -132,17 +132,6 @@ exports.verfiySignUp = catchAsync(async (req, res, next) => {
   createSendToken(user, 201, req, res);
 });
 
-/*exports.SignUp = catchAsync(async (req, res, next) => {
-  const newUser = await User.create({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-    confirmPassword: req.body.confirmPassword,
-  });
-
-  createSendToken(newUser, 201, req, res);
-});*/
-
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
   // 1) Check if email and password exist
