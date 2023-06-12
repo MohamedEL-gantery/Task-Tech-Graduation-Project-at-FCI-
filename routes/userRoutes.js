@@ -7,7 +7,8 @@ const PostRouter = require('./postRoutes');
 
 const router = express.Router();
 
-router.post('/signup', authController.SignUp);
+router.post('/signup', authController.signup);
+router.post('/verfiysignup', authController.verfiySignUp);
 router.post('/login', authController.login);
 router.get('/logout', authController.logout);
 

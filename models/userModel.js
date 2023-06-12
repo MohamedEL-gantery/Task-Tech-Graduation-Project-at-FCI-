@@ -19,13 +19,13 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, ' Please Enter A Vaild Password'],
+      required: [true, ' Please Provide A Vaild Password'],
       minLenght: 8,
       select: false,
     },
     confirmPassword: {
       type: String,
-      required: [true, 'Please Enter A Vaild Confirm Password'],
+      required: [true, 'Please Provide A Vaild Confirm Password'],
       // This only works on create and SAVE !!!
       validate: {
         validator: function (el) {
@@ -46,6 +46,7 @@ const userSchema = new mongoose.Schema(
     },
     birthDate: {
       type: Date,
+      validate: [validator.isDate, 'Please Provide A Valid BirthDate'],
     },
     location: {
       type: String,
@@ -53,7 +54,7 @@ const userSchema = new mongoose.Schema(
     phoneNumber: {
       type: String,
       maxlength: 11,
-      validate: [validator.isMobilePhone, 'Please Enter A Vaild Phone'],
+      validate: [validator.isMobilePhone, 'Please Provide A Vaild Phone'],
     },
     skills: {
       type: [String],
@@ -147,7 +148,7 @@ const userSchema = new mongoose.Schema(
           'University of Tokyo',
           'Universite PSL',
         ],
-        message: 'Please Enter Your Education ',
+        message: 'Please Provide Your Education ',
       },
     },
     cv: {
@@ -190,10 +191,6 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
-    passwordChangedAt: Date,
-    passwordResetExpires: Date,
-    passwordResetCode: String,
-    passwordResetVerified: Boolean,
     active: {
       type: Boolean,
       default: true,
@@ -217,6 +214,13 @@ const userSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
+    passwordChangedAt: Date,
+    passwordResetExpires: Date,
+    passwordResetCode: String,
+    passwordResetVerified: Boolean,
+    ResetExpires: Date,
+    ResetCode: String,
+    ResetVerified: Boolean,
   },
   {
     toJSON: { virtuals: true },
@@ -273,6 +277,16 @@ userSchema.methods.createPasswordResetCode = function () {
 
   this.passwordResetExpires = Date.now() + 10 * 60 * 1000;
   this.passwordResetVerified = false;
+
+  return restCode;
+};
+
+userSchema.methods.generateVerificationCode = function () {
+  const restCode = Math.floor(1000 + Math.random() * 9000).toString();
+  this.ResetCode = crypto.createHash('sha256').update(restCode).digest('hex');
+
+  this.ResetExpires = Date.now() + 10 * 60 * 1000;
+  this.ResetVerified = false;
 
   return restCode;
 };

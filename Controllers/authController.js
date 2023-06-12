@@ -35,7 +35,95 @@ const createSendToken = (user, statusCode, req, res) => {
   });
 };
 
-exports.SignUp = catchAsync(async (req, res, next) => {
+exports.signup = catchAsync(async (req, res, next) => {
+  // 1) Signup
+  let newUser = await User.create({
+    name: req.body.name,
+    email: req.body.email,
+    password: req.body.password,
+    confirmPassword: req.body.confirmPassword,
+  });
+
+  // 2) Generate the random reset token
+  const resetCode = newUser.generateVerificationCode();
+  const token = signToken(newUser._id);
+  await newUser.save();
+
+  // 3) Send it to newUser's email
+  const message = `Hi ${newUser.name},\n We received a request to signup on TASK-TECH. \n ${resetCode} \n Enter this code to complete the signup. \n The TASK TECH Team`;
+
+  try {
+    sendEmail({
+      email: newUser.email,
+      subject: 'Your verification code (valid for 10 min)',
+      message,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      message: 'Verification code sent to email!',
+      token,
+    });
+  } catch (err) {
+    newUser.ResetCode = undefined;
+    newUser.ResetExpires = undefined;
+    newUser.ResetVerified = undefined;
+    await newUser.save();
+
+    return next(
+      new AppError('There was an error sending the email. Try again later!'),
+      500
+    );
+  }
+  req.user = newUser;
+});
+
+exports.verfiySignUp = catchAsync(async (req, res, next) => {
+  // 1) Get user based on reset code
+  const hashedResetCode = crypto
+    .createHash('sha256')
+    .update(req.body.resetCode)
+    .digest('hex');
+
+  const currentToken = req.headers.authorization.split(' ')[1];
+
+  // 2) Verification token.
+  const decoded = await promisify(jwt.verify)(
+    currentToken,
+    process.env.JWT_SECRET
+  );
+
+  // 3) Check if user still exists
+  let user = await User.findById(decoded.id);
+  if (!user) {
+    return next(
+      new AppError(
+        'The token belonging to this user does not longer exist.',
+        401
+      )
+    );
+  }
+
+  user = await User.findOne({
+    ResetCode: hashedResetCode,
+    ResetExpires: { $gt: Date.now() },
+  });
+
+  if (!user) {
+    await User.findByIdAndDelete(decoded.id);
+    return next(new AppError('Reset code invalid or expired'));
+  }
+
+  user.ResetCode = undefined;
+  user.ResetExpires = undefined;
+  user.ResetVerified = true;
+
+  // 2) Reset code valid
+  await user.save({ validateBeforeSave: false });
+  createSendToken(user, 201, res);
+});
+
+/*exports.SignUp = catchAsync(async (req, res, next) => {
   const newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
@@ -44,7 +132,7 @@ exports.SignUp = catchAsync(async (req, res, next) => {
   });
 
   createSendToken(newUser, 201, req, res);
-});
+});*/
 
 exports.login = catchAsync(async (req, res, next) => {
   const { email, password } = req.body;
