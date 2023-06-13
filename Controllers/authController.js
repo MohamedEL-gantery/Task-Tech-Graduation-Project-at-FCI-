@@ -50,7 +50,9 @@ exports.signup = catchAsync(async (req, res, next) => {
   await newUser.save({ validateBeforeSave: false });
 
   // 3) Send it to newUser's email
-  const message = `Hi ${newUser.name},\n We received a request to signup on TASK-TECH. \n ${resetCode} \n Enter this code to complete the signup. \n The TASK TECH Team`;
+  const date = new Date();
+  const hoursAndMinutes = date.getHours() + ':' + date.getMinutes();
+  const message = `Hi ${newUser.name},\n We received a request to signup on TASK-TECH in ${hoursAndMinutes}. \n ${resetCode} \n Enter this code to complete the signup. \n The TASK TECH Team`;
 
   try {
     sendEmail({
@@ -144,8 +146,26 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError('invalid email or password', 401));
   }
-  // 3) If everything ok, send token to client
-  createSendToken(user, 200, req, res);
+
+  // 3) Send it to email
+  const date = new Date();
+  const hoursAndMinutes = date.getHours() + ':' + date.getMinutes();
+
+  const message = `Hi ${user.name},\n You have loged in ${hoursAndMinutes} \n  \n The TASK TECH Team`;
+
+  try {
+    sendEmail({
+      email: user.email,
+      message,
+    });
+    // 4) If everything ok, send token to client
+    createSendToken(user, 200, req, res);
+  } catch (err) {
+    return next(
+      new AppError('There was an error sending the email. Try again later!'),
+      500
+    );
+  }
 });
 
 exports.protect = catchAsync(async (req, res, next) => {

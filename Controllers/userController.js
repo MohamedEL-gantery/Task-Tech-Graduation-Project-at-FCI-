@@ -5,14 +5,15 @@ const Post = require('../models/postModel');
 const catchAsync = require('../utils/catchAync');
 const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/apiFeatures');
-const uploadImageController = require('./uploadImageController');
+const uploadImageMiddleware = require('../middlewares/uploadImageMiddleware');
+const uploadPdfMiddleware = require('../middlewares/uploadPdfMiddlewares');
 
 exports.getMe = (req, res, next) => {
   req.params.id = req.user.id;
   next();
 };
 // UPLOAD PHOTO FOR PORTFOLIO
-exports.uploadUserPortfolio = uploadImageController.uploadMixOfImages([
+exports.uploadUserPortfolio = uploadImageMiddleware.uploadMixOfImages([
   { name: 'images', maxCount: 6 },
 ]);
 // Filter
@@ -66,7 +67,7 @@ exports.UserPortfolio = catchAsync(async (req, res, next) => {
 });
 
 // UPLOAD USER PHOTO
-exports.uploadUserPhoto = uploadImageController.uploadSingleImage('photo');
+exports.uploadUserPhoto = uploadImageMiddleware.uploadSingleImage('photo');
 
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
@@ -111,40 +112,8 @@ exports.userPhoto = catchAsync(async (req, res, next) => {
     },
   });
 });
-// UPLOAD CV
-const Storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/cv');
-  },
-  filename: (req, file, cb) => {
-    const ext = file.mimetype.split('/')[1];
-    cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
-  },
-});
 
-// Filter
-function checkFileType(file, cb) {
-  const filetypes = /pdf/;
-  const mimetype = filetypes.test(file.mimetype);
-
-  if (mimetype) {
-    return cb(null, true);
-  } else {
-    cb(new AppError('pdf Only!', 400));
-  }
-}
-
-const maxSize = 2 * 1024 * 1024;
-
-const upload = multer({
-  storage: Storage,
-  limits: { fileSize: maxSize },
-  fileFilter: function (req, file, cb) {
-    checkFileType(file, cb);
-  },
-});
-
-exports.uploadUserFile = upload.single('cv');
+exports.uploadUserFile = uploadPdfMiddleware.uploadPdf('cv');
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
