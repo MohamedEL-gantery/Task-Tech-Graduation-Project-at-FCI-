@@ -151,11 +151,12 @@ exports.login = catchAsync(async (req, res, next) => {
   const date = new Date();
   const hoursAndMinutes = date.getHours() + ':' + date.getMinutes();
 
-  const message = `Hi ${user.name},\n You have loged in ${hoursAndMinutes} \n  \n The TASK TECH Team`;
+  const message = `Hi ${user.name},\n You have loged in ${hoursAndMinutes} \n The TASK TECH Team`;
 
   try {
     sendEmail({
       email: user.email,
+      subject: "Welcome to TASK TECH, we 're glad to have you",
       message,
     });
     // 4) If everything ok, send token to client
@@ -223,7 +224,9 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
 
   await user.save({ validateBeforeSave: false });
   // Send it to user's email
-  const message = `Hi ${user.name},\n We received a request to reset the password on your TASK-TECH Account. \n ${resetCode} \n Enter this code to complete the reset. \n Thanks for helping us keep your account secure.\n The TASK TECH Team`;
+  const date = new Date();
+  const hoursAndMinutes = date.getHours() + ':' + date.getMinutes();
+  const message = `Hi ${user.name},\n We received a request to reset the password on your TASK-TECH Account in ${hoursAndMinutes}. \n ${resetCode} \n Enter this code to complete the reset. \n Thanks for helping us keep your account secure.\n The TASK TECH Team`;
   try {
     await sendEmail({
       email: user.email,
