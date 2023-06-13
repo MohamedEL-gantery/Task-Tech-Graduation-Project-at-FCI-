@@ -151,7 +151,7 @@ exports.login = catchAsync(async (req, res, next) => {
   const date = new Date();
   const hoursAndMinutes = date.getHours() + ':' + date.getMinutes();
 
-  const message = `Hi ${user.name},\n You have loged in ${hoursAndMinutes} \n The TASK TECH Team`;
+  const message = `Hi ${user.name},\n You have loged in ${hoursAndMinutes}. \n The TASK TECH Team`;
 
   try {
     sendEmail({
