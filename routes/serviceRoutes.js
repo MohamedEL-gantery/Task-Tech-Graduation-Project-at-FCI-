@@ -10,6 +10,7 @@ router
     authController.protect,
     authController.restrictTo('user'),
     serviceController.uploadFile,
+    serviceController.resizeAttachFile,
     serviceController.createService
   )
   .get(serviceController.getAllService);
@@ -22,6 +23,7 @@ router
     authController.restrictTo('user', 'admin'),
     serviceController.isOwner,
     serviceController.uploadFile,
+    serviceController.resizeAttachFile,
     serviceController.updateService
   )
   .delete(

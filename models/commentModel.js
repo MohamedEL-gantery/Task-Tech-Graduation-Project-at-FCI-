@@ -15,16 +15,9 @@ const commentSchema = new mongoose.Schema(
       type: mongoose.Schema.ObjectId,
       ref: 'Post',
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
-    },
   },
   {
+    timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   }

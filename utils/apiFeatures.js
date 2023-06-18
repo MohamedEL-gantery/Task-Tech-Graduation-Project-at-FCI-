@@ -42,21 +42,22 @@ class APIFeatures {
 
   search(modelName) {
     if (this.queryString.keyword) {
-      let queryN = {};
-      if (modelName === 'Users' || 'Posts' || 'Services') {
-        queryN.$or = [
+      let mongooseQuery = {};
+      if (modelName === 'Users') {
+        mongooseQuery.$or = [
           { name: { $regex: this.queryString.keyword, $options: 'i' } },
-          { description: { $regex: this.queryString.keyword, $options: 'i' } },
-          { salary: { $regex: this.queryString.keyword, $options: 'i' } },
-          { softwareTool: { $regex: this.queryString.keyword, $options: 'i' } },
+          { minimum: { $regex: this.queryString.keyword, $options: 'i' } },
+          { maximum: { $regex: this.queryString.keyword, $options: 'i' } },
           { catogery: { $regex: this.queryString.keyword, $options: 'i' } },
           { skills: { $regex: this.queryString.keyword, $options: 'i' } },
         ];
       } else {
-        queryN = { name: { $regex: this.queryString.keyword, $options: 'i' } };
+        mongooseQuery = {
+          name: { $regex: this.queryString.keyword, $options: 'i' },
+        };
       }
 
-      this.query = this.query.find(queryN);
+      this.query = this.query.find(mongooseQuery);
     }
     return this;
   }

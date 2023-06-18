@@ -2,7 +2,7 @@ const express = require('express');
 const orderConroller = require('../Controllers/orderController');
 const authController = require('../Controllers/authController');
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
 
 router.use(authController.protect);
 
@@ -14,10 +14,7 @@ router.get(
 
 router.use(authController.restrictTo('admin'));
 
-router
-  .route('/')
-  .get(orderConroller.getAllOrder)
-  .post(orderConroller.createOrder);
+router.route('/').get(orderConroller.getAllOrder);
 
 router
   .route('/:id')

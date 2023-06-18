@@ -7,30 +7,35 @@ const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/apiFeatures');
 
 exports.CheckoutSession = catchAsync(async (req, res, next) => {
-  // get service depend on serviceId
+  // 1) get service depend on serviceId
   const service = await Service.findById(req.params.serviceId);
 
   if (!service) {
     return next(new AppError(`no service found for ${req.params.serviceId}`));
   }
 
-  // app settings
+  // 2) app settings
   const servicePrice = service.salary;
   const taxSalary = servicePrice * 0.15;
 
   const totalServicePrice = servicePrice + taxSalary;
 
-  // create stripe checkout session
+  // 3) create stripe checkout session
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
         quantity: 1,
         price_data: {
-          currency: 'usd',
+          currency: 'egp',
           unit_amount: totalServicePrice * 100,
           product_data: {
             name: `${service.name} `,
             description: service.description,
+            images: [
+              `${req.protocol}://${req.get(
+                'host'
+              )}/attachFile/{service.attachFile}`,
+            ],
           },
         },
       },
@@ -38,12 +43,12 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
     mode: 'payment',
     payment_method_types: ['card'],
     success_url: `${req.protocol}://${req.get('host')}/`,
-    cancel_url: `${req.protocol}://${req.get('host')}/`,
+    cancel_url: `${req.protocol}://${req.get('host')}/service/${service.slug}`,
     customer_email: req.user.email,
     client_reference_id: req.params.serviceId,
   });
 
-  // send session response
+  // 4) send session response
   res.status(200).json({
     status: 'success',
     session,
@@ -87,17 +92,13 @@ exports.webhookCheckout = async (req, res, next) => {
   res.status(200).json({ received: true });
 };
 
-exports.createOrder = catchAsync(async (req, res, next) => {
-  const order = await Order.create(req.body);
-  res.status(201).json({
-    status: 'success',
-    order,
-  });
-});
-
 exports.getAllOrder = catchAsync(async (req, res, modelName = '', next) => {
+  let filter = {};
+  if (req.params.userId) filter = { user: req.params.userId };
+
   const documentsCounts = await Order.countDocuments();
-  const features = new APIFeatures(Order.find(), req.query)
+
+  const features = new APIFeatures(Order.find(filter), req.query)
     .filter()
     .sort()
     .limitFields()

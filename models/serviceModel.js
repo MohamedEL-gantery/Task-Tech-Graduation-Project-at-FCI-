@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 const serviceSchema = new mongoose.Schema(
   {
@@ -7,6 +8,7 @@ const serviceSchema = new mongoose.Schema(
       trim: true,
       required: [true, 'Service Must Have A Name'],
     },
+    slug: String,
     description: {
       type: String,
       trim: true,
@@ -53,16 +55,9 @@ const serviceSchema = new mongoose.Schema(
       ref: 'User',
       required: [true, 'Service Must Belong To User'],
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
-    },
   },
   {
+    timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   }
@@ -90,6 +85,12 @@ serviceSchema.post('init', (doc) => {
 // create
 serviceSchema.post('save', (doc) => {
   setImageURL(doc);
+});
+
+// DOCUMENT MIDDLEWARE: runs before .save() and .create()
+serviceSchema.pre('save', function (next) {
+  this.slug = slugify(this.name, { lower: true });
+  next();
 });
 
 const Service = mongoose.model('Service', serviceSchema);

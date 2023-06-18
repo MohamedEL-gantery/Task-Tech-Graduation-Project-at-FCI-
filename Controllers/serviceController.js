@@ -1,70 +1,35 @@
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
-const multer = require('multer');
 const User = require('../models/userModel');
 const Service = require('../models/serviceModel');
 const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAync');
 const AppError = require('../utils/appError');
+const uploadImageMiddleware = require('../middlewares/uploadImageMiddleware');
 
-function checkFileType(file, cb) {
-  const filetypes = /pdf/;
-  const mimetype = filetypes.test(file.mimetype);
+exports.uploadFile = uploadImageMiddleware.uploadSingleImage('attachFile');
 
-  if (mimetype) {
-    return cb(null, true);
-  } else {
-    cb(new AppError('pdf Only!', 400));
-  }
-}
+exports.resizeAttachFile = catchAsync(async (req, res, next) => {
+  if (!req.file) return next();
 
-const Storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/attachFile');
-  },
-  filename: (req, file, cb) => {
-    const ext = file.mimetype.split('/')[1];
-    cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
-  },
+  const filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+
+  await sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/attachFile/${filename}`);
+
+  req.body.attachFile = filename;
+
+  next();
 });
-
-const maxSize = 2 * 1024 * 1024;
-
-const upload = multer({
-  storage: Storage,
-  limits: { fileSize: maxSize },
-  fileFilter: function (req, file, cb) {
-    checkFileType(file, cb);
-  },
-});
-
-exports.uploadFile = upload.single('attachFile');
-
-const filterObj = (obj, ...allowedFields) => {
-  const newObj = {};
-  Object.keys(obj).forEach((el) => {
-    if (allowedFields.includes(el)) newObj[el] = obj[el];
-  });
-  return newObj;
-};
 
 exports.createService = catchAsync(async (req, res, next) => {
   //Allow nested routes
   if (!req.body.user) req.body.user = req.params.userId;
 
-  const filteredBody = filterObj(
-    req.body,
-    'name',
-    'description',
-    'delieveryDate',
-    'softwareTool',
-    'category',
-    'salary',
-    'user'
-  );
-  if (req.file) filteredBody.attachFile = req.file.filename;
-
-  const newService = await Service.create(filteredBody);
+  const newService = await Service.create(req.body);
 
   res.status(201).json({
     status: 'success',
@@ -74,32 +39,30 @@ exports.createService = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getAllService = catchAsync(
-  async (req, res, modelName = 'Services', next) => {
-    let filter = {};
-    if (req.params.userId) filter = { user: req.params.userId };
-    const documentsCounts = await Service.countDocuments();
-    //EXCUTE QUERY
-    const features = new APIFeatures(Service.find(filter), req.query)
-      .filter()
-      .sort()
-      .limitFields()
-      .search(modelName)
-      .paginate(documentsCounts);
+exports.getAllService = catchAsync(async (req, res, modelName = '', next) => {
+  let filter = {};
+  if (req.params.userId) filter = { user: req.params.userId };
+  const documentsCounts = await Service.countDocuments();
+  //EXCUTE QUERY
+  const features = new APIFeatures(Service.find(filter), req.query)
+    .filter()
+    .sort()
+    .limitFields()
+    .search(modelName)
+    .paginate(documentsCounts);
 
-    const { query, paginationResult } = features;
-    const services = await query;
+  const { query, paginationResult } = features;
+  const services = await query;
 
-    res.status(200).json({
-      status: 'success',
-      results: services.length,
-      paginationResult,
-      data: {
-        services,
-      },
-    });
-  }
-);
+  res.status(200).json({
+    status: 'success',
+    results: services.length,
+    paginationResult,
+    data: {
+      services,
+    },
+  });
+});
 
 exports.getService = catchAsync(async (req, res, next) => {
   const service = await Service.findById(req.params.id).populate('user');
@@ -174,17 +137,7 @@ exports.updateService = catchAsync(async (req, res, next) => {
     );
   }
 
-  const filteredBody = filterObj(
-    req.body,
-    'name',
-    'description',
-    'delieveryDate',
-    'softwareTool',
-    'category',
-    'salary'
-  );
-  if (req.file) filteredBody.attachFile = req.file.filename;
-  service = await Service.findByIdAndUpdate(req.params.id, filteredBody, {
+  service = await Service.findByIdAndUpdate(req.params.id, req.body, {
     new: true, //to return new document
     runValidators: true,
   });

@@ -3,7 +3,8 @@ const authController = require('../Controllers/authController');
 const userController = require('../Controllers/userController');
 const reviewRouter = require('./reviewRoutes');
 const serviceRouter = require('./serviceRoutes');
-const PostRouter = require('./postRoutes');
+const postRouter = require('./postRoutes');
+const orderRouter = require('./orderRoutes');
 
 const router = express.Router();
 
@@ -91,6 +92,9 @@ router.use('/:userId/service', serviceRouter);
 // POST /userId/234fd55/post
 // GET /userId/234fd55/post
 // GET /userId/234fd55/post/9487fd55
-router.use('/:userId/post', PostRouter);
+router.use('/:userId/post', postRouter);
+
+// GET /userId/234fd55/order
+router.use('/:userId/order', orderRouter);
 
 module.exports = router;

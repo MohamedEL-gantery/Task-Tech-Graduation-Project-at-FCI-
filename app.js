@@ -18,7 +18,6 @@ require('./auth/passportFacebook');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./Controllers/errorController');
-const createSendToken = require('./utils/createToken');
 const userRouter = require('./routes/userRoutes');
 const postRouter = require('./routes/postRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
@@ -105,6 +104,9 @@ app.use(
       'skills',
       'minimum',
       'maximum',
+      'catogery',
+      'delieveryDate',
+      'softwareTool',
     ],
   })
 );
@@ -137,10 +139,6 @@ app.get('/auth/failure', (req, res) => {
     message: 'somthing went wrong',
   });
 });
-
-//app.get('/protected', (req, res, user) => {
-//  createSendToken(user, 200, res);
-//});
 
 app.get('/protected', (req, res) => {
   res.status(200).json({

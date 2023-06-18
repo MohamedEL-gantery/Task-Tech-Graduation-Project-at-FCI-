@@ -44,7 +44,7 @@ exports.signup = catchAsync(async (req, res, next) => {
     confirmPassword: req.body.confirmPassword,
   });
 
-  // 2) Generate the random reset token
+  // 2) Generate hash reset random 4 digits and save it in db
   const resetCode = newUser.generateVerificationCode();
   const token = signToken(newUser._id);
   await newUser.save({ validateBeforeSave: false });
@@ -61,10 +61,10 @@ exports.signup = catchAsync(async (req, res, next) => {
       message,
     });
 
-    res.status(200).json({
+    res.status(201).json({
       status: 'success',
-      message: 'Verification code sent to email!',
       token,
+      message: 'Verification Code sent to Email',
     });
   } catch (err) {
     newUser.ResetCode = undefined;
@@ -98,7 +98,7 @@ exports.verfiySignUp = catchAsync(async (req, res, next) => {
     currentToken = req.cookies.jwt;
   }
 
-  // 2) Verification token.
+  // 2) Verification token
   const decoded = await promisify(jwt.verify)(
     currentToken,
     process.env.JWT_SECRET
@@ -124,13 +124,13 @@ exports.verfiySignUp = catchAsync(async (req, res, next) => {
     await User.findByIdAndDelete(decoded.id);
     return next(new AppError('Reset code invalid or expired'));
   }
-
+  // 4) Reset code valid
   user.ResetCode = undefined;
   user.ResetExpires = undefined;
   user.ResetVerified = true;
 
-  // 2) Reset code valid
   await user.save({ validateBeforeSave: false });
+  // 5) If everything ok, send token to client
   createSendToken(user, 201, req, res);
 });
 
@@ -211,7 +211,7 @@ exports.protect = catchAsync(async (req, res, next) => {
 });
 
 exports.forgetPassword = catchAsync(async (req, res, next) => {
-  // Get User Based on Posted Email
+  // 1) Get User Based on Posted Email
   const user = await User.findOne({ email: req.body.email });
 
   if (!user) {
@@ -221,12 +221,13 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
   }
   // 2) If user exist, Generate hash reset random 4 digits and save it in db
   const resetCode = user.createPasswordResetCode();
-
   await user.save({ validateBeforeSave: false });
   // Send it to user's email
   const date = new Date();
   const hoursAndMinutes = date.getHours() + ':' + date.getMinutes();
+
   const message = `Hi ${user.name},\n We received a request to reset the password on your TASK-TECH Account in ${hoursAndMinutes}. \n ${resetCode} \n Enter this code to complete the reset. \n Thanks for helping us keep your account secure.\n The TASK TECH Team`;
+
   try {
     await sendEmail({
       email: user.email,
@@ -276,6 +277,7 @@ exports.verifyPasswordResetCode = catchAsync(async (req, res, next) => {
 exports.resetPassword = catchAsync(async (req, res, next) => {
   // 1) Get user based on email
   const user = await User.findOne({ email: req.body.email });
+
   if (!user) {
     return next(
       new AppError(`There is no user with email ${req.body.email}`, 404)
