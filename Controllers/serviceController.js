@@ -1,5 +1,6 @@
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
+const sharp = require('sharp');
 const User = require('../models/userModel');
 const Service = require('../models/serviceModel');
 const APIFeatures = require('../utils/apiFeatures');
