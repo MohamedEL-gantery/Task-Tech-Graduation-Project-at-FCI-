@@ -12,11 +12,10 @@ router.get(
   orderConroller.CheckoutSession
 );
 
-router.use(authController.restrictTo('admin'));
-
 router
   .route('/')
-  .get(authController.restrictTo('user'), orderConroller.getAllOrder);
+  .get(authController.restrictTo('user', 'admin'), orderConroller.getAllOrder);
+router.use(authController.restrictTo('admin'));
 
 router
   .route('/:id')
