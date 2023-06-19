@@ -206,7 +206,7 @@ exports.getAllUser = catchAsync(async (req, res, next) => {
     .filter()
     .sort()
     .limitFields()
-    .search('Users')
+    .search('User', 'name')
     .paginate(documentsCounts);
 
   const { query, paginationResult } = features;

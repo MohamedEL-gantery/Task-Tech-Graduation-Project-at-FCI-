@@ -43,7 +43,7 @@ class APIFeatures {
   search(modelName) {
     if (this.queryString.keyword) {
       let mongooseQuery = {};
-      if (modelName === 'Users') {
+      if (modelName === 'User') {
         mongooseQuery.$or = [
           { name: { $regex: this.queryString.keyword, $options: 'i' } },
           { catogery: { $regex: this.queryString.keyword, $options: 'i' } },
