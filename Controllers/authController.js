@@ -52,7 +52,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   // 3) Send it to newUser's email
   const date = new Date();
   const hoursAndMinutes = date.getHours() + ':' + date.getMinutes();
-  const message = `Hi ${newUser.name},\n We received a request to signup on TASK-TECH in ${hoursAndMinutes}. \n ${resetCode} \n Enter this code to complete the signup. \n The TASK TECH Team`;
+  const message = `Hello ${newUser.name},\n Glad to have you ,\n We received a request to sign up on TASK-TECH in ${hoursAndMinutes}. \n ${resetCode} \n Please confirm this code to complete the sign up.\n Once confirmed, you'll be able to log in with your new account. \n The TASK TECH Team`;
 
   try {
     sendEmail({
