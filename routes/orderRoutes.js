@@ -14,7 +14,9 @@ router.get(
 
 router.use(authController.restrictTo('admin'));
 
-router.route('/').get(orderConroller.getAllOrder);
+router
+  .route('/')
+  .get(authController.restrictTo('user'), orderConroller.getAllOrder);
 
 router
   .route('/:id')
