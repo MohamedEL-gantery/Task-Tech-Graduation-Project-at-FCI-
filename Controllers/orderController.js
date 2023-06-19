@@ -32,9 +32,7 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
             name: `${service.name} `,
             description: service.description,
             images: [
-              `${req.protocol}://${req.get(
-                'host'
-              )}/attachFile/{service.attachFile}`,
+              `${req.protocol}://${req.get('host')}/{service.attachFile}`,
             ],
           },
         },
