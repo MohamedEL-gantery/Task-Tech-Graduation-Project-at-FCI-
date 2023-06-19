@@ -31,9 +31,6 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
           product_data: {
             name: `${service.name} `,
             description: service.description,
-            images: [
-              `${req.protocol}://${req.get('host')}/{service.attachFile}`,
-            ],
           },
         },
       },
