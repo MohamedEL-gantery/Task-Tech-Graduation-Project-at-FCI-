@@ -65,7 +65,7 @@ class APIFeatures {
   search() {
     if (this.queryString.keyword) {
       const mongooseQuery = {
-        name: { $regex: this.queryString.keyword, $options: 'i' },
+        keyword: { $regex: this.queryString.keyword, $options: 'i' },
       };
       this.query = this.query.find(mongooseQuery);
     }
