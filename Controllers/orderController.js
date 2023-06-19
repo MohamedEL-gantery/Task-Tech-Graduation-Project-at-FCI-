@@ -87,7 +87,7 @@ exports.webhookCheckout = async (req, res, next) => {
   res.status(200).json({ received: true });
 };
 
-exports.getAllOrder = catchAsync(async (req, res, modelName = '', next) => {
+exports.getAllOrder = catchAsync(async (req, res, next) => {
   let filter = {};
   if (req.params.userId) filter = { user: req.params.userId };
 
@@ -97,7 +97,7 @@ exports.getAllOrder = catchAsync(async (req, res, modelName = '', next) => {
     .filter()
     .sort()
     .limitFields()
-    .search(modelName)
+    .search()
     .paginate(documentsCounts);
 
   const { query, paginationResult } = features;

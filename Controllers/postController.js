@@ -20,7 +20,7 @@ exports.createPost = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getAllPosts = catchAsync(async (req, res, modelName = '', next) => {
+exports.getAllPosts = catchAsync(async (req, res, next) => {
   let filter = {};
   if (req.params.userId) filter = { user: req.params.userId };
   const documentsCounts = await Post.countDocuments();
@@ -29,7 +29,7 @@ exports.getAllPosts = catchAsync(async (req, res, modelName = '', next) => {
     .filter()
     .sort()
     .limitFields()
-    .search(modelName)
+    .search()
     .paginate(documentsCounts);
 
   const { query, paginationResult } = features;

@@ -40,16 +40,13 @@ class APIFeatures {
     return this;
   }
 
-  /*search(modelName) {
+  search(modelName) {
     if (this.queryString.keyword) {
       let mongooseQuery = {};
       if (modelName === 'Users') {
         mongooseQuery.$or = [
           { name: { $regex: this.queryString.keyword, $options: 'i' } },
-          { minimum: { $regex: this.queryString.keyword, $options: 'i' } },
-          { maximum: { $regex: this.queryString.keyword, $options: 'i' } },
           { catogery: { $regex: this.queryString.keyword, $options: 'i' } },
-          { skills: { $regex: this.queryString.keyword, $options: 'i' } },
         ];
       } else {
         mongooseQuery = {
@@ -59,32 +56,6 @@ class APIFeatures {
 
       this.query = this.query.find(mongooseQuery);
     }
-    return this;
-  }
-  
-   search() {
-    if (this.queryString.keyword) {
-      const mongooseQuery = {
-        keyword: { $regex: this.queryString.keyword, $options: 'i' },
-      };
-      this.query = this.query.find(mongooseQuery);
-    }
-    return this;
-  }
-
-  
-  */
-
-  search() {
-    const keyword = this.queryString.keyword
-      ? {
-          name: {
-            $regex: this.queryString.keyword,
-            $options: 'i',
-          },
-        }
-      : {};
-    this.query = this.query.find({ ...keyword });
     return this;
   }
 

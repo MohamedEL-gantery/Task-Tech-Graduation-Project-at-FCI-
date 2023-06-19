@@ -21,7 +21,7 @@ exports.createReview = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getAllReviews = catchAsync(async (req, res, modelName = '', next) => {
+exports.getAllReviews = catchAsync(async (req, res, next) => {
   let filter = {};
   if (req.params.revieweeId) filter = { reviewee: req.params.revieweeId };
   const documentsCounts = await Review.countDocuments();
@@ -29,7 +29,7 @@ exports.getAllReviews = catchAsync(async (req, res, modelName = '', next) => {
     .filter()
     .sort()
     .limitFields()
-    .search(modelName)
+    .search()
     .paginate(documentsCounts);
 
   const { query, paginationResult } = features;

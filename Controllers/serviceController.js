@@ -40,7 +40,7 @@ exports.createService = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getAllService = catchAsync(async (req, res, modelName = '', next) => {
+exports.getAllService = catchAsync(async (req, res, next) => {
   let filter = {};
   if (req.params.userId) filter = { user: req.params.userId };
   const documentsCounts = await Service.countDocuments();
@@ -49,7 +49,7 @@ exports.getAllService = catchAsync(async (req, res, modelName = '', next) => {
     .filter()
     .sort()
     .limitFields()
-    .search(modelName)
+    .search()
     .paginate(documentsCounts);
 
   const { query, paginationResult } = features;
