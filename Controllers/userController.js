@@ -200,16 +200,17 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getAllUser = catchAsync(async (req, res, modelName = 'Users', next) => {
+exports.getAllUser = catchAsync(async (req, res, next) => {
   const documentsCounts = await User.countDocuments();
   const features = new APIFeatures(User.find(), req.query)
     .filter()
     .sort()
     .limitFields()
-    .search(modelName)
+    .search()
     .paginate(documentsCounts);
 
   const { query, paginationResult } = features;
+
   const users = await query;
 
   res.status(200).json({

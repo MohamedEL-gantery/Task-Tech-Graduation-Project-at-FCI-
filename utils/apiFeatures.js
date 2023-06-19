@@ -40,7 +40,7 @@ class APIFeatures {
     return this;
   }
 
-  search(modelName) {
+  /*search(modelName) {
     if (this.queryString.keyword) {
       let mongooseQuery = {};
       if (modelName === 'Users') {
@@ -57,6 +57,16 @@ class APIFeatures {
         };
       }
 
+      this.query = this.query.find(mongooseQuery);
+    }
+    return this;
+  }*/
+
+  search() {
+    if (this.queryString.keyword) {
+      const mongooseQuery = {
+        name: { $regex: this.queryString.keyword, $options: 'i' },
+      };
       this.query = this.query.find(mongooseQuery);
     }
     return this;
