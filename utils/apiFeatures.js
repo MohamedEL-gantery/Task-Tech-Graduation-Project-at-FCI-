@@ -40,7 +40,7 @@ class APIFeatures {
     return this;
   }
 
-  search(modelName) {
+  /*  search(modelName) {
     if (this.queryString.keyword) {
       let mongooseQuery = {};
       if (modelName === 'Users') {
@@ -57,7 +57,7 @@ class APIFeatures {
       this.query = this.query.find(mongooseQuery);
     }
     return this;
-  }
+  }*/
 
   paginate(countDocuments) {
     const page = this.queryString.page * 1 || 1;
