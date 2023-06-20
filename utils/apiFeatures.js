@@ -40,24 +40,18 @@ class APIFeatures {
     return this;
   }
 
-  /*  search(modelName) {
+  search() {
     if (this.queryString.keyword) {
-      let mongooseQuery = {};
-      if (modelName === 'Users') {
-        mongooseQuery.$or = [
-          { name: { $regex: this.queryString.keyword, $options: 'i' } },
-          { category: { $regex: this.queryString.keyword, $options: 'i' } },
-        ];
-      } else {
-        mongooseQuery = {
-          name: { $regex: this.queryString.keyword, $options: 'i' },
-        };
-      }
+      const mongooseQuery = {};
+      mongooseQuery.$or = [
+        { name: { $regex: this.queryString.keyword, $options: 'i' } },
+        { category: { $regex: this.queryString.keyword, $options: 'i' } },
+      ];
 
       this.query = this.query.find(mongooseQuery);
     }
     return this;
-  }*/
+  }
 
   paginate(countDocuments) {
     const page = this.queryString.page * 1 || 1;
