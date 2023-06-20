@@ -208,10 +208,10 @@ exports.getAllUser = catchAsync(async (req, res, next) => {
     .limitFields()
     .paginate(documentsCounts);
 
-  const { query, paginationResult } = features;
+  let { query, paginationResult } = features;
 
   if (req.query.keyword) {
-    let mongooseQuery = {};
+    const mongooseQuery = {};
     mongooseQuery.$or = [
       { name: { $regex: req.query.keyword, $options: 'i' } },
       { category: { $regex: req.query.keyword, $options: 'i' } },
