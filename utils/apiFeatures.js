@@ -40,15 +40,20 @@ class APIFeatures {
     return this;
   }
 
-  async search() {
+  search() {
     if (this.queryString.keyword) {
       const mongooseQuery = {};
       mongooseQuery.$or = [
         { name: { $regex: this.queryString.keyword, $options: 'i' } },
         { category: { $regex: this.queryString.keyword, $options: 'i' } },
+        { description: { $regex: this.queryString.keyword, $options: 'i' } },
+        { description: { $regex: this.queryString.keyword, $options: 'i' } },
+        { delieveryDate: { $regex: this.queryString.keyword, $options: 'i' } },
+        { salary: { $regex: this.queryString.keyword, $options: 'i' } },
+        { phoneNumber: { $regex: this.queryString.keyword, $options: 'i' } },
       ];
 
-      this.query = await this.query.find(mongooseQuery);
+      this.query = this.query.find(mongooseQuery);
     }
     return this;
   }
