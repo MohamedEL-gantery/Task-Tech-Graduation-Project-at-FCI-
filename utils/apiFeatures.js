@@ -40,7 +40,7 @@ class APIFeatures {
     return this;
   }
 
-  search() {
+  async search() {
     if (this.queryString.keyword) {
       const mongooseQuery = {};
       mongooseQuery.$or = [
@@ -50,7 +50,7 @@ class APIFeatures {
         { delieveryDate: { $regex: this.queryString.keyword, $options: 'i' } },
       ];
 
-      this.query = this.query.find(mongooseQuery);
+      this.query = await this.query.find(mongooseQuery);
     }
     return this;
   }
