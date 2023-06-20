@@ -40,7 +40,7 @@ class APIFeatures {
     return this;
   }
 
-  search() {
+  async search() {
     if (this.queryString.keyword) {
       const mongooseQuery = {};
       mongooseQuery.$or = [
@@ -48,7 +48,7 @@ class APIFeatures {
         { category: { $regex: new RegExp(this.queryString.keyword, 'i') } },
       ];
 
-      this.query = this.query.find(mongooseQuery);
+      this.query = await this.query.find(mongooseQuery);
     }
     return this;
   }
