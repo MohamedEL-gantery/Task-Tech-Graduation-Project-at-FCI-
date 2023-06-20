@@ -47,10 +47,7 @@ class APIFeatures {
         { name: { $regex: this.queryString.keyword, $options: 'i' } },
         { category: { $regex: this.queryString.keyword, $options: 'i' } },
         { description: { $regex: this.queryString.keyword, $options: 'i' } },
-        { description: { $regex: this.queryString.keyword, $options: 'i' } },
         { delieveryDate: { $regex: this.queryString.keyword, $options: 'i' } },
-        { salary: { $regex: this.queryString.keyword, $options: 'i' } },
-        { phoneNumber: { $regex: this.queryString.keyword, $options: 'i' } },
       ];
 
       this.query = this.query.find(mongooseQuery);
