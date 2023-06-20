@@ -216,7 +216,7 @@ exports.getAllUser = catchAsync(async (req, res, next) => {
       { name: { $regex: req.query.keyword, $options: 'i' } },
       { category: { $regex: req.query.keyword, $options: 'i' } },
     ];
-    query = this.query.find(mongooseQuery);
+    query = query.find(mongooseQuery);
   }
 
   const users = await query;
