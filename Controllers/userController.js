@@ -211,12 +211,12 @@ exports.getAllUser = catchAsync(async (req, res, next) => {
   const { query, paginationResult } = features;
 
   if (req.query.keyword) {
-    const mongooseQuery = {};
+    let mongooseQuery = {};
     mongooseQuery.$or = [
       { name: { $regex: req.query.keyword, $options: 'i' } },
       { category: { $regex: req.query.keyword, $options: 'i' } },
     ];
-    query = await query.find(mongooseQuery);
+    query = query.find(mongooseQuery);
   }
 
   const users = await query;
