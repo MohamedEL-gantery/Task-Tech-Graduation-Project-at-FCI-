@@ -213,8 +213,8 @@ exports.getAllUser = catchAsync(async (req, res, next) => {
   if (req.query.keyword) {
     const mongooseQuery = {};
     mongooseQuery.$or = [
-      { name: { $regex: this.queryString.keyword, $options: 'i' } },
-      { category: { $regex: this.queryString.keyword, $options: 'i' } },
+      { name: { $regex: req.query.keyword, $options: 'i' } },
+      { category: { $regex: req.query.keyword, $options: 'i' } },
     ];
     query = this.query.find(mongooseQuery);
   }
