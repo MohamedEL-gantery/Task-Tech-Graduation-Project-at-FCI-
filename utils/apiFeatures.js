@@ -44,8 +44,8 @@ class APIFeatures {
     if (this.queryString.keyword) {
       const mongooseQuery = {};
       mongooseQuery.$or = [
-        { name: { $regex: new RegExp(this.queryString.keyword, 'i') } },
-        { category: { $regex: new RegExp(this.queryString.keyword, 'i') } },
+        { name: { $regex: this.queryString.keyword, $options: 'i' } },
+        { category: { $regex: this.queryString.keyword, $options: 'i' } },
       ];
 
       this.query = await this.query.find(mongooseQuery);
