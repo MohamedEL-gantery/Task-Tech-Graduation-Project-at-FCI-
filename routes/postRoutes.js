@@ -36,4 +36,5 @@ router
   .route('/:id/saved')
   .put(authController.restrictTo('user'), postController.savePost);
 
+router.route('/:search/search-post').get(postController.searchPost);
 module.exports = router;

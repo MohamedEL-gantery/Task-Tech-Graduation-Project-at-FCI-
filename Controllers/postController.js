@@ -29,7 +29,7 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
     .filter()
     .sort()
     .limitFields()
-    .search()
+    //.search()
     .paginate(documentsCounts);
 
   const { query, paginationResult } = features;
@@ -171,6 +171,31 @@ exports.savePost = catchAsync(async (req, res, next) => {
     res.status(200).json({
       status: 'success',
       message: 'the post has been unsaved',
+    });
+  }
+});
+
+//search post
+
+exports.searchPost = catchAsync(async (req, res, next) => {
+  const search = req.params.search;
+  const posts = await Post.find({
+    $or: [
+      { name: { $regex: '.*' + search + '.*' } },
+      { description: { $regex: '.*' + search + '.*' } },
+    ],
+  });
+  if (posts.length > 0) {
+    res.status(200).json({
+      status: 'success',
+      message: 'posts datails',
+      results: posts.length,
+      posts,
+    });
+  } else {
+    res.status(200).json({
+      status: 'success',
+      message: 'posts not found!',
     });
   }
 });

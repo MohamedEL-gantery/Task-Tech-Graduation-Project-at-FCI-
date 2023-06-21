@@ -97,4 +97,6 @@ router.use('/:userId/post', postRouter);
 // GET /userId/234fd55/order
 router.use('/:userId/order', orderRouter);
 
+router.route('/:search/search-user').get(userController.searchUser);
+
 module.exports = router;

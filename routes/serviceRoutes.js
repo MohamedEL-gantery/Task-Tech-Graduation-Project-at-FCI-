@@ -33,4 +33,6 @@ router
     serviceController.deleteService
   );
 
+router.route('/:search/search-service').get(serviceController.searchService);
+
 module.exports = router;

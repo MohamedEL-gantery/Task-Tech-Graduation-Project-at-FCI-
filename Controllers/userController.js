@@ -206,7 +206,7 @@ exports.getAllUser = catchAsync(async (req, res, next) => {
     .filter()
     .sort()
     .limitFields()
-    .search()
+    //.search()
     .paginate(documentsCounts);
 
   const { query, paginationResult } = features;
@@ -308,4 +308,28 @@ exports.timeline = catchAsync(async (req, res, next) => {
   );
 
   res.status(200).json(userPosts.concat(...friendPosts));
+});
+
+//search users
+exports.searchUser = catchAsync(async (req, res, next) => {
+  const search = req.params.search;
+  const users = await User.find({
+    $or: [
+      { name: { $regex: '.*' + search + '.*' } },
+      { job: { $regex: '.*' + search + '.*' } },
+    ],
+  });
+  if (users.length > 0) {
+    res.status(200).json({
+      status: 'success',
+      message: 'users datails',
+      results: users.length,
+      users,
+    });
+  } else {
+    res.status(200).json({
+      status: 'success',
+      message: 'users not found!',
+    });
+  }
 });

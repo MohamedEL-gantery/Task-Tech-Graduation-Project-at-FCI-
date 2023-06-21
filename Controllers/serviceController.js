@@ -49,7 +49,7 @@ exports.getAllService = catchAsync(async (req, res, next) => {
     .filter()
     .sort()
     .limitFields()
-    .search()
+    //.search()
     .paginate(documentsCounts);
 
   const { query, paginationResult } = features;
@@ -174,4 +174,28 @@ exports.deleteService = catchAsync(async (req, res, next) => {
     status: 'success',
     data: null,
   });
+});
+
+//search service
+exports.searchService = catchAsync(async (req, res, next) => {
+  const search = req.params.search;
+  const services = await Service.find({
+    $or: [
+      { name: { $regex: '.*' + search + '.*' } },
+      { description: { $regex: '.*' + search + '.*' } },
+    ],
+  });
+  if (services.length > 0) {
+    res.status(200).json({
+      status: 'success',
+      message: 'services datails',
+      results: services.length,
+      services,
+    });
+  } else {
+    res.status(200).json({
+      status: 'success',
+      message: 'services not found!',
+    });
+  }
 });
