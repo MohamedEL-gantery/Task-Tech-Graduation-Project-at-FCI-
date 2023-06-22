@@ -175,7 +175,7 @@ const userSchema = new mongoose.Schema(
     },
     job: {
       type: String,
-      default:'freelancer'
+      default: 'freelancer',
     },
     role: {
       type: String,
@@ -187,6 +187,7 @@ const userSchema = new mongoose.Schema(
       min: [1, 'Rating must be above 1.0'],
       max: [5, 'Rating must be below 5.0'],
       set: (val) => Math.round(val * 10) / 10, // 4.666666, 46.6666, 47, 4.7
+      default: 4.5,
     },
     ratingsQuantity: {
       type: Number,
