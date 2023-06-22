@@ -3,25 +3,25 @@ const slugify = require('slugify');
 
 const categorySchema = new mongoose.Schema(
   {
-    id: {
+    _id: {
       type: String,
       unique: true,
-      //required: true,
+      required: true,
     },
     name: {
       type: String,
-      //required: true,
+      required: true,
     },
     photo: {
       type: String,
       unique: true,
-      //required: true,
+      required: true,
     },
     slug: String,
     type: {
       type: String,
       enum: ['popular', 'trending'],
-      //required: true,
+      required: true,
     },
   },
   {
@@ -31,7 +31,7 @@ const categorySchema = new mongoose.Schema(
 
 // Define a pre-save hook to set id equal to name
 categorySchema.pre('save', function (next) {
-  this.id = this.name;
+  this._id = this.name;
   next();
 });
 
