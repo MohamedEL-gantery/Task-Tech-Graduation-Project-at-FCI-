@@ -6,22 +6,23 @@ const categorySchema = new mongoose.Schema(
     _id: {
       type: String,
       unique: true,
-      required: true,
+      required: [true, 'Category must have a unique Id'],
     },
+    slug: String,
     name: {
       type: String,
-      required: true,
+      unique: true,
+      required: [true, 'Category must have a unique name'],
     },
     photo: {
       type: String,
       unique: true,
-      required: true,
+      required: [true, 'Category must have a  photo'],
     },
-    slug: String,
     type: {
       type: String,
       enum: ['popular', 'trending'],
-      required: true,
+      required: [true, 'Type must be one of  popular or trending '],
     },
   },
   {
@@ -35,11 +36,17 @@ categorySchema.pre('save', function (next) {
   next();
 });
 
-/*// Document Middleware: runs before .save() and .create()
+// Define a pre-update hook to set id equal to name
+categorySchema.pre('updateOne', function (next) {
+  this._update._id = this._update.name;
+  next();
+});
+
+// Document Middleware: runs before .save() and .create()
 categorySchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
-});*/
+});
 
 const setImageURL = (doc) => {
   if (doc.photo) {

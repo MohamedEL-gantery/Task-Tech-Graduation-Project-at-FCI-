@@ -87,7 +87,7 @@ serviceSchema.post('save', (doc) => {
   setImageURL(doc);
 });
 
-// DOCUMENT MIDDLEWARE: runs before .save() and .create()
+// Document Middleware: runs before .save() and .create()
 serviceSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
