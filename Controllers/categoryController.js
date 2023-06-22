@@ -25,7 +25,8 @@ exports.resizeCategoryPhoto = catchAsync(async (req, res, next) => {
 });
 
 exports.createCategory = catchAsync(async (req, res, next) => {
-  const newCategory = await Category.create(req.body);
+  const { id, name, type, photo } = req.body;
+  const newCategory = await Category.create({ id, name, type, photo });
   res.status(201).json({
     status: 'success',
     data: {
