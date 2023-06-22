@@ -56,6 +56,21 @@ exports.getallCategory = catchAsync(async (req, res, next) => {
   });
 });
 
+exports.getOneCategory = catchAsync(async (req, res, next) => {
+  const category = await Category.findById(req.params.id);
+
+  if (!category) {
+    return next(new AppError('No Category Found With this  ID'), 404);
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      category,
+    },
+  });
+});
+
 exports.updateCategory = catchAsync(async (req, res, next) => {
   const category = await Category.findByIdAndUpdate(req.params.id, req.body, {
     new: true, // to return new document
@@ -63,7 +78,7 @@ exports.updateCategory = catchAsync(async (req, res, next) => {
   });
 
   if (!category) {
-    return next(new AppError('No Category Found With this  ID '), 404);
+    return next(new AppError('No Category Found With this  ID'), 404);
   }
 
   res.status(200).json({
@@ -78,7 +93,7 @@ exports.deleteCategory = catchAsync(async (req, res, next) => {
   const category = await Category.findByIdAndDelete(req.params.id);
 
   if (!category) {
-    return next(new AppError('No Category Found With this  ID '), 404);
+    return next(new AppError('No Category Found With this  ID'), 404);
   }
 
   res.status(204).json({

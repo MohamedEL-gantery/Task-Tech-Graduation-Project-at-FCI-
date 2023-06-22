@@ -19,15 +19,21 @@ router
     categoryController.getallCategory
   );
 
-router.use(authController.restrictTo('admin'));
-
 router
   .route('/:id')
+  .get(
+    authController.restrictTo('admin', 'user'),
+    categoryController.getOneCategory
+  )
   .patch(
+    authController.restrictTo('admin'),
     categoryController.uploadCategoryPhoto,
     categoryController.resizeCategoryPhoto,
     categoryController.updateCategory
   )
-  .delete(categoryController.deleteCategory);
+  .delete(
+    authController.restrictTo('admin'),
+    categoryController.deleteCategory
+  );
 
 module.exports = router;
