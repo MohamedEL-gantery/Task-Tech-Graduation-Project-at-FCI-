@@ -238,7 +238,7 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
 exports.alisTopUser = (req, res, next) => {
   (req.query.limit = '4'),
     (req.query.sort = '-ratingsAverage'),
-    (req.query.fields = 'name,ratingsAverage,photo,skills,ratingsQuantity,jop');
+    (req.query.fields = 'name,ratingsAverage,photo,skills,ratingsQuantity,job');
   next();
 };
 
