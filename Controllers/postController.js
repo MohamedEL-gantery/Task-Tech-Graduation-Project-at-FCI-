@@ -29,7 +29,6 @@ exports.getAllPosts = catchAsync(async (req, res, next) => {
     .filter()
     .sort()
     .limitFields()
-    //.search()
     .paginate(documentsCounts);
 
   const { query, paginationResult } = features;
@@ -176,7 +175,6 @@ exports.savePost = catchAsync(async (req, res, next) => {
 });
 
 //search post
-
 exports.searchPost = catchAsync(async (req, res, next) => {
   const search = req.params.search;
   const posts = await Post.find({

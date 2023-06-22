@@ -206,19 +206,9 @@ exports.getAllUser = catchAsync(async (req, res, next) => {
     .filter()
     .sort()
     .limitFields()
-    //.search()
     .paginate(documentsCounts);
 
   const { query, paginationResult } = features;
-
-  /*  if (req.query.keyword) {
-    const mongooseQuery = {};
-    mongooseQuery.$or = [
-      { name: { $regex: req.query.keyword, $options: 'i' } },
-      { category: { $regex: req.query.keyword, $options: 'i' } },
-    ];
-    query = query.find(mongooseQuery);
-  }*/
 
   const users = await query;
 

@@ -14,7 +14,7 @@ exports.resizeCategoryPhoto = catchAsync(async (req, res, next) => {
   const filename = `category-${uuidv4()}-${Date.now()}.jpeg`;
 
   await sharp(req.file.buffer)
-    .resize(600, 600)
+    .resize(500, 500)
     .toFormat('jpeg')
     .jpeg({ quality: 90 })
     .toFile(`public/category/${filename}`);
@@ -24,11 +24,8 @@ exports.resizeCategoryPhoto = catchAsync(async (req, res, next) => {
   next();
 });
 
-exports.createCategory = catchAsync(async (req, req, next) => {
-  const newCategory = await Category.create({
-    _id: req.body._id,
-    photo: req.body.photo,
-  });
+exports.createCategory = catchAsync(async (req, res, next) => {
+  const newCategory = await Category.create(req.body);
   res.status(201).json({
     status: 'success',
     data: {
@@ -43,7 +40,6 @@ exports.getallCategory = catchAsync(async (req, res, next) => {
     .filter()
     .sort()
     .limitFields()
-    //.search()
     .paginate(documentsCounts);
 
   const { query, paginationResult } = features;
@@ -61,7 +57,7 @@ exports.getallCategory = catchAsync(async (req, res, next) => {
 });
 
 exports.updateCategory = catchAsync(async (req, res, next) => {
-  const category = await Category.findByIdAndUpdate(req.paramas.id, req.body, {
+  const category = await Category.findByIdAndUpdate(req.params.id, req.body, {
     new: true, // to return new document
     runValidators: true,
   });
@@ -79,7 +75,7 @@ exports.updateCategory = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteCategory = catchAsync(async (req, res, next) => {
-  const category = await Category.findByIdAndDelete(req.paramas.id);
+  const category = await Category.findByIdAndDelete(req.params.id);
 
   if (!category) {
     return next(new AppError('No Category Found With this  ID '), 404);

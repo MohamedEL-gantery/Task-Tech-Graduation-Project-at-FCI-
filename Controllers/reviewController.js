@@ -29,7 +29,6 @@ exports.getAllReviews = catchAsync(async (req, res, next) => {
     .filter()
     .sort()
     .limitFields()
-    //.search()
     .paginate(documentsCounts);
 
   const { query, paginationResult } = features;

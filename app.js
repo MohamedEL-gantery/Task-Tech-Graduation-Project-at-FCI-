@@ -19,6 +19,7 @@ require('./auth/passportFacebook');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./Controllers/errorController');
 const userRouter = require('./routes/userRoutes');
+const categoryRouter = require('./routes/categoryRoutes');
 const postRouter = require('./routes/postRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const serviceRouter = require('./routes/serviceRoutes');
@@ -178,6 +179,7 @@ app.use('/api/v1/comments', commentRouter);
 app.use('/api/v1/chats', chatRouter);
 app.use('/api/v1/messages', messageRouter);
 app.use('/api/v1/orders', orderRouter);
+app.use('/api/v1/categorys', categoryRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
