@@ -6,22 +6,22 @@ const categorySchema = new mongoose.Schema(
     id: {
       type: String,
       unique: true,
-      required: true,
+      //required: true,
     },
     name: {
       type: String,
-      required: true,
+      //required: true,
     },
     photo: {
       type: String,
       unique: true,
-      required: true,
+      //required: true,
     },
     slug: String,
     type: {
       type: String,
       enum: ['popular', 'trending'],
-      required: true,
+      //required: true,
     },
   },
   {
