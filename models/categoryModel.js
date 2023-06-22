@@ -29,11 +29,11 @@ const categorySchema = new mongoose.Schema(
   }
 );
 
-/*// Define a pre-save hook to set id equal to name
+// Define a pre-save hook to set id equal to name
 categorySchema.pre('save', function (next) {
   this.id = this.name;
   next();
-});*/
+});
 
 /*// Document Middleware: runs before .save() and .create()
 categorySchema.pre('save', function (next) {

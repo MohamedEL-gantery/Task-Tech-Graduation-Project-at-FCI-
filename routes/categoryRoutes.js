@@ -10,9 +10,9 @@ router
   .route('/')
   .post(
     authController.restrictTo('admin'),
-    categoryController.createCategory,
     categoryController.uploadCategoryPhoto,
-    categoryController.resizeCategoryPhoto
+    categoryController.resizeCategoryPhoto,
+    categoryController.createCategory
   )
   .get(
     authController.restrictTo('admin', 'user'),
@@ -24,9 +24,9 @@ router.use(authController.restrictTo('admin'));
 router
   .route('/:id')
   .patch(
-    categoryController.updateCategory,
     categoryController.uploadCategoryPhoto,
-    categoryController.resizeCategoryPhoto
+    categoryController.resizeCategoryPhoto,
+    categoryController.updateCategory
   )
   .delete(categoryController.deleteCategory);
 
