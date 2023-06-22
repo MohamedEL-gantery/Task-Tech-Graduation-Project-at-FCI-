@@ -35,11 +35,11 @@ categorySchema.pre('save', function (next) {
   next();
 });
 
-// Document Middleware: runs before .save() and .create()
+/*// Document Middleware: runs before .save() and .create()
 categorySchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });
   next();
-});
+});*/
 
 const setImageURL = (doc) => {
   if (doc.photo) {
