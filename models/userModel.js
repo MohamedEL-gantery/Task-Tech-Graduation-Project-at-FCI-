@@ -175,6 +175,7 @@ const userSchema = new mongoose.Schema(
     },
     job: {
       type: String,
+      default:'freelancer'
     },
     role: {
       type: String,
