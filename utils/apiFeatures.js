@@ -41,14 +41,13 @@ class APIFeatures {
   }
 
   search() {
-    if (this.queryString.keyword) {
-      const mongooseQuery = {};
-      mongooseQuery.$or = [
-        { name: { $regex: '.*' + this.queryString.keyword + '.*' } },
-      ];
-
-      this.query = this.query.find(mongooseQuery);
+    if (this.queryString.search) {
+      const query = this.queryString.search;
+      const field = this.queryString.searchField || 'name'; // Default field to search
+      const regexQuery = new RegExp(query, 'i');
+      this.query = this.query.where(field).regex(regexQuery);
     }
+
     return this;
   }
 
