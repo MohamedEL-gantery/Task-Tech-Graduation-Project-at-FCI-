@@ -47,12 +47,25 @@ class APIFeatures {
     return this;
   }
 
-  search() {
+  /*  search() {
     if (this.queryString.search) {
       const query = this.queryString.search;
       const fields = this.queryString.searchFields || 'name description job'; // Default field to search
       const regexQuery = new RegExp(query, 'i');
       this.query = this.query.where(fields).regex(regexQuery);
+    }
+
+    return this;
+  }*/
+  search() {
+    if (this.queryString.search) {
+      const query = this.queryString.search;
+      const fields = this.queryString.searchFields || 'name description job'; // Default fields to search
+      const regexQuery = new RegExp(query, 'i');
+      const orQuery = fields
+        .split(' ')
+        .map((field) => ({ [field]: regexQuery }));
+      this.query = this.query.or(orQuery);
     }
 
     return this;
