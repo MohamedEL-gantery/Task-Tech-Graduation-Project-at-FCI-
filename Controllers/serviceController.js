@@ -49,8 +49,8 @@ exports.getAllService = catchAsync(async (req, res, next) => {
     .filter()
     .sort()
     .limitFields()
+    .search()
     .paginate(documentsCounts);
-
   const { query, paginationResult } = features;
   const services = await query;
 
