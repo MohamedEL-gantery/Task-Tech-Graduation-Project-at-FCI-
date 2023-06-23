@@ -40,20 +40,17 @@ class APIFeatures {
     return this;
   }
 
-  // search() {
-  //   if (this.queryString.keyword) {
-  //     const mongooseQuery = {};
-  //     mongooseQuery.$or = [
-  //       { name: { $regex: this.queryString.keyword, $options: 'i' } },
-  //       { category: { $regex: this.queryString.keyword, $options: 'i' } },
-  //       { description: { $regex: this.queryString.keyword, $options: 'i' } },
-  //       { delieveryDate: { $regex: this.queryString.keyword, $options: 'i' } },
-  //     ];
+  search() {
+    if (this.queryString.keyword) {
+      const mongooseQuery = {};
+      mongooseQuery.$or = [
+        { name: { $regex: '.*' + this.queryString.keyword + '.*' } },
+      ];
 
-  //     this.query = this.query.find(mongooseQuery);
-  //   }
-  //   return this;
-  // }
+      this.query = this.query.find(mongooseQuery);
+    }
+    return this;
+  }
 
   paginate(countDocuments) {
     const page = this.queryString.page * 1 || 1;

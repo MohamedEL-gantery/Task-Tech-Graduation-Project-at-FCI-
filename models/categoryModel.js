@@ -3,17 +3,12 @@ const slugify = require('slugify');
 
 const categorySchema = new mongoose.Schema(
   {
-    _id: {
-      type: String,
-      unique: true,
-      required: [true, 'Category must have a unique Id'],
-    },
-    slug: String,
     name: {
       type: String,
       unique: true,
       required: [true, 'Category must have a unique name'],
     },
+    slug: String,
     photo: {
       type: String,
       unique: true,
@@ -32,18 +27,6 @@ const categorySchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
-// Define a pre-save hook to set id equal to name
-categorySchema.pre('save', function (next) {
-  this._id = this.name;
-  next();
-});
-
-// Define a pre-update hook to set id equal to name
-categorySchema.pre('updateOne', function (next) {
-  this._update._id = this._update.name;
-  next();
-});
 
 // Document Middleware: runs before .save() and .create()
 categorySchema.pre('save', function (next) {
