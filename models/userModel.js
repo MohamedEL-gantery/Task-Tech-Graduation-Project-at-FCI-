@@ -1,5 +1,3 @@
-const mongooseIntlPhoneNumber = require('mongoose-intl-phone-number');
-const { parsePhoneNumberFromString } = require('libphonenumber-js');
 const crypto = require('crypto');
 const mongoose = require('mongoose');
 const validator = require('validator');
@@ -55,13 +53,7 @@ const userSchema = new mongoose.Schema(
     },
     phoneNumber: {
       type: String,
-      validate: {
-        validator: function (value) {
-          const phoneNumber = parsePhoneNumberFromString(value);
-          return phoneNumber && phoneNumber.isValid();
-        },
-        message: 'Please Provide A Vaild Phone',
-      },
+      validate: [validator.isMobilePhone, 'Please Provide A Vaild Phone'],
     },
     skills: {
       type: [String],
@@ -237,14 +229,6 @@ const userSchema = new mongoose.Schema(
     toObject: { virtuals: true },
   }
 );
-
-userSchema.plugin(mongooseIntlPhoneNumber, {
-  hook: 'validate',
-  phoneNumberField: 'phoneNumber',
-  nationalFormatField: 'nationalFormat',
-  internationalFormat: 'internationalFormat',
-  countryCodeField: 'countryCode',
-});
 
 userSchema.pre('save', async function (next) {
   // Only run this function if password was actually modified
