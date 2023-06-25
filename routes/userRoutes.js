@@ -98,5 +98,8 @@ router.use('/:userId/post', postRouter);
 router.use('/:userId/order', orderRouter);
 
 router.route('/:search/search-user').get(userController.searchUser);
+router
+  .route('/:id/relatedPosts')
+  .get(authController.restrictTo('user', 'admin'), userController.relatedPosts);
 
 module.exports = router;

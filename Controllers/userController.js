@@ -324,3 +324,18 @@ exports.searchUser = catchAsync(async (req, res, next) => {
     });
   }
 });
+
+//related posts
+exports.relatedPosts = catchAsync(async (req, res, next) => {
+  if (!req.params.id) req.params.id = req.user.id;
+  const currentUser = await User.findById(req.params.id);
+
+  const posts = await Post.find({ softwareTool: currentUser.skills });
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      posts,
+    },
+  });
+});
