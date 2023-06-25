@@ -15,7 +15,12 @@ router.use('/:postId/comments', commentRouter);
 router
   .route('/')
   .get(postController.getAllPosts)
-  .post(authController.restrictTo('user'), postController.createPost);
+  .post(
+    authController.restrictTo('user'),
+    postController.uploadFile,
+    postController.resizeAttachFile,
+    postController.createPost
+  );
 
 router.get('/:id', postController.getPost);
 
@@ -37,4 +42,5 @@ router
   .put(authController.restrictTo('user'), postController.savePost);
 
 router.route('/:search/search-post').get(postController.searchPost);
+
 module.exports = router;

@@ -1,10 +1,30 @@
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
-const Post = require('../models/postModel');
+const sharp = require('sharp');
 const User = require('../models/userModel');
+const Post = require('../models/postModel');
 const APIFeatures = require('../utils/apiFeatures');
 const catchAsync = require('../utils/catchAync');
 const AppError = require('../utils/appError');
+const uploadImageMiddleware = require('../middlewares/uploadImageMiddleware');
+
+exports.uploadFile = uploadImageMiddleware.uploadSingleImage('attachFile');
+
+exports.resizeAttachFile = catchAsync(async (req, res, next) => {
+  if (!req.file) return next();
+
+  const filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+
+  await sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/attachFile/${filename}`);
+
+  req.body.attachFile = filename;
+
+  next();
+});
 
 exports.createPost = catchAsync(async (req, res, next) => {
   //Allow nested routes

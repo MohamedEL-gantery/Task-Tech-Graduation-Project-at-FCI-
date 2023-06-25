@@ -20,6 +20,10 @@ const postSchema = new mongoose.Schema(
       type: [String],
       required: [true, 'task must have tools'],
     },
+    attachFile: {
+      type: String,
+      required: [true, 'task must have attach file'],
+    },
     catogery: {
       type: String,
       enum: {
