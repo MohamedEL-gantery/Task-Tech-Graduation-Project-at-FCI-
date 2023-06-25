@@ -120,12 +120,12 @@ const setImageURL = (doc) => {
   }
 };
 // findOne, findAll and update
-serviceSchema.post('init', (doc) => {
+postSchema.post('init', (doc) => {
   setImageURL(doc);
 });
 
 // create
-serviceSchema.post('save', (doc) => {
+postSchema.post('save', (doc) => {
   setImageURL(doc);
 });
 
