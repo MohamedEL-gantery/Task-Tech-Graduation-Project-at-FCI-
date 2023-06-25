@@ -325,7 +325,7 @@ exports.searchUser = catchAsync(async (req, res, next) => {
   }
 });
 
-//related posts
+//related post
 exports.relatedPosts = catchAsync(async (req, res, next) => {
   if (!req.params.id) req.params.id = req.user.id;
   const currentUser = await User.findById(req.params.id);
