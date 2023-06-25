@@ -29,6 +29,8 @@ router
   .patch(
     authController.restrictTo('user', 'admin'),
     postController.isOwner,
+    postController.uploadFile,
+    postController.resizeAttachFile,
     postController.updatePost
   )
   .delete(
