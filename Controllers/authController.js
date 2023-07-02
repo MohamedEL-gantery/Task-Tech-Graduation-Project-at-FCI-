@@ -51,8 +51,10 @@ exports.signup = catchAsync(async (req, res, next) => {
 
   // 3) Send it to newUser's email
   const date = new Date();
-  const hoursAndMinutes = date.getHours() + ':' + date.getMinutes();
-  const message = `Hello ${newUser.name},\n Glad to have you. \n We received a request to sign up on TASK-TECH in ${hoursAndMinutes}. \n ${resetCode} \n Please confirm this code to complete the sign up.\n Once confirmed, you'll be able to log in with your new account. \n The TASK TECH Team`;
+  const options = { timeZone: 'Africa/Cairo' };
+  const dateString = date.toLocaleString('en-US', options);
+
+  const message = `Hello ${newUser.name},\n Glad to have you. \n We received a request to sign up on TASK-TECH in ${dateString}. \n ${resetCode} \n Please confirm this code to complete the sign up.\n Once confirmed, you'll be able to log in with your new account. \n The TASK TECH Team`;
 
   try {
     sendEmail({
@@ -153,8 +155,10 @@ exports.login = catchAsync(async (req, res, next) => {
 
   // 3) Send it to email
   const date = new Date();
-  const options = { timeZone: 'Africa/Cairo', hour12: false };
-  const dateString = date.toLocaleString('en-US', options);
+  const userLocale = req.headers['accept-language'];
+  const userTimeZone = user.timezone;
+  const options = { timeZone: userTimeZone };
+  const dateString = new Intl.DateTimeFormat(userLocale, options).format(date);
 
   const message = `Hi ${user.name},\n You have loged in ${dateString}. \n The TASK TECH Team`;
 
@@ -229,9 +233,10 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
   // Send it to user's email
   const date = new Date();
-  const hoursAndMinutes = date.getHours() + ':' + date.getMinutes();
+  const options = { timeZone: 'Africa/Cairo' };
+  const dateString = date.toLocaleString('en-US', options);
 
-  const message = `Hi ${user.name},\n We received a request to reset the password on your TASK-TECH Account in ${hoursAndMinutes}. \n ${resetCode} \n Enter this code to complete the reset. \n Thanks for helping us keep your account secure.\n The TASK TECH Team`;
+  const message = `Hi ${user.name},\n We received a request to reset the password on your TASK-TECH Account in ${dateString}. \n ${resetCode} \n Enter this code to complete the reset. \n Thanks for helping us keep your account secure.\n The TASK TECH Team`;
 
   try {
     await sendEmail({
