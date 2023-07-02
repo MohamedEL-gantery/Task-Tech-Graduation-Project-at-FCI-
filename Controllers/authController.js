@@ -36,7 +36,7 @@ const createSendToken = (user, statusCode, req, res) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-  // 1) Signup
+  // 1) Create new account
   let newUser = await User.create({
     name: req.body.name,
     email: req.body.email,
@@ -82,7 +82,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   req.user = newUser;
 });
 
-exports.verfiySignUp = catchAsync(async (req, res, next) => {
+exports.verfiySignup = catchAsync(async (req, res, next) => {
   // 1) Get user based on reset code
   const hashedResetCode = crypto
     .createHash('sha256')
@@ -132,7 +132,7 @@ exports.verfiySignUp = catchAsync(async (req, res, next) => {
   user.ResetVerified = true;
 
   await user.save({ validateBeforeSave: false });
-  // 5) If everything ok, send token to client
+  // 5) If everything is ok, generate token
   createSendToken(user, 201, req, res);
 });
 
@@ -166,7 +166,7 @@ exports.login = catchAsync(async (req, res, next) => {
       subject: "Welcome to TASK TECH, we 're glad to have you",
       message,
     });
-    // 4) If everything ok, send token to client
+    // 4) If everything is ok, generate token
     createSendToken(user, 200, req, res);
   } catch (err) {
     return next(
@@ -212,14 +212,14 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
 
-  // Grant Access to Protected Route
+  // Grant access to protected route
   req.user = currentUser;
   res.locals.user = currentUser;
   next();
 });
 
 exports.forgetPassword = catchAsync(async (req, res, next) => {
-  // 1) Get User Based on Posted Email
+  // 1) Get user based on posted Email
   const user = await User.findOne({ email: req.body.email });
 
   if (!user) {
@@ -307,7 +307,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 
   await user.save();
 
-  // 3) if everything is ok, generate token
+  // 3) If everything is ok, generate token
   createSendToken(user, 200, req, res);
 });
 
@@ -322,7 +322,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
   user.confirmPassword = req.body.confirmPassword;
   await user.save();
 
-  // if everything is ok, generate token
+  // If everything is ok, generate token
   createSendToken(user, 200, req, res);
 });
 

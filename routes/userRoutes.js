@@ -9,7 +9,7 @@ const orderRouter = require('./orderRoutes');
 const router = express.Router();
 
 router.post('/signup', authController.signup);
-router.post('/verfiysignup', authController.verfiySignUp);
+router.post('/verfiysignup', authController.verfiySignup);
 router.post('/login', authController.login);
 router.get('/logout', authController.logout);
 
