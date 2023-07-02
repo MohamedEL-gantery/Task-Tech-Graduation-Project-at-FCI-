@@ -153,9 +153,12 @@ exports.login = catchAsync(async (req, res, next) => {
 
   // 3) Send it to email
   const date = new Date();
-  const hoursAndMinutes = date.getHours() + ':' + date.getMinutes();
+  const options = { timeZone: 'Africa/Cairo' };
+  const dateString = date.toLocaleString('en-US', options);
+  const monthAndYear = date.getMonth() + 1 + '/' + date.getFullYear();
+  const fullDate = dateString + ' ' + monthAndYear;
 
-  const message = `Hi ${user.name},\n You have loged in ${hoursAndMinutes}. \n The TASK TECH Team`;
+  const message = `Hi ${user.name},\n You have loged in ${fullDate}. \n The TASK TECH Team`;
 
   try {
     sendEmail({
