@@ -153,7 +153,7 @@ exports.login = catchAsync(async (req, res, next) => {
 
   // 3) Send it to email
   const date = new Date();
-  const options = { timeZone: 'Africa/Cairo' };
+  const options = { timeZone: 'Africa/Cairo', hour12: false };
   const dateString = date.toLocaleString('en-US', options);
 
   const message = `Hi ${user.name},\n You have loged in ${dateString}. \n The TASK TECH Team`;
