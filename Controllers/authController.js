@@ -140,15 +140,15 @@ exports.login = catchAsync(async (req, res, next) => {
   if (!email || !password) {
     return next(new AppError(' please enter your email or password', 400));
   }
-  // 2) Check if user exists && password is correct
+  // 2) Check if user exists && password is correct && resetVerified is true
   const user = await User.findOne({ email }).select('+password');
-
-  if (user.ResetVerified != true) {
-    return next(new AppError('this user does not longer exist', 404));
-  }
 
   if (!user || !(await user.correctPassword(password, user.password))) {
     return next(new AppError('invalid email or password', 401));
+  }
+
+  if (user.ResetVerified != true) {
+    return next(new AppError('this user does not longer exist', 401));
   }
 
   // 3) Send it to email
