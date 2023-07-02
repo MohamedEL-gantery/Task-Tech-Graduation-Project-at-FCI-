@@ -155,10 +155,8 @@ exports.login = catchAsync(async (req, res, next) => {
 
   // 3) Send it to email
   const date = new Date();
-  const userLocale = req.headers['accept-language'];
-  const userTimeZone = user.timezone;
-  const options = { timeZone: userTimeZone };
-  const dateString = new Intl.DateTimeFormat(userLocale, options).format(date);
+  const options = { timeZone: 'Africa/Cairo' };
+  const dateString = date.toLocaleString('en-US', options);
 
   const message = `Hi ${user.name},\n You have loged in ${dateString}. \n The TASK TECH Team`;
 
@@ -181,6 +179,7 @@ exports.login = catchAsync(async (req, res, next) => {
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) Getting token and check of it's there
   let token;
+
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
@@ -213,7 +212,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
 
-  // GRANT ACCESS TO PROTECTED ROUTE
+  // Grant Access to Protected Route
   req.user = currentUser;
   res.locals.user = currentUser;
   next();
@@ -271,6 +270,7 @@ exports.verifyPasswordResetCode = catchAsync(async (req, res, next) => {
     passwordResetCode: hashedResetCode,
     passwordResetExpires: { $gt: Date.now() },
   });
+
   if (!user) {
     return next(new AppError('Reset code invalid or expired', 400));
   }
