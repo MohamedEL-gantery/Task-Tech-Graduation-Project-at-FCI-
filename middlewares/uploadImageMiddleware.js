@@ -74,11 +74,8 @@ exports.uploadMixOfImages = (arrayOfFields) => {
         next(error);
       } else {
         try {
-          console.log('req.files:', req.files);
-          console.log('arrayOfFields:', arrayOfFields);
-          const promises = arrayOfFields.map((fieldName) => {
-            console.log('fieldName:', fieldName);
-            return uploadToCloudinary(req.files[fieldName][0]);
+          const promises = arrayOfFields.map((field) => {
+            return uploadToCloudinary(req.files[field.name][0]);
           });
           const results = await Promise.all(promises);
           req.fileUrls = results.map((result) => result.secure_url);

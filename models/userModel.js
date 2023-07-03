@@ -300,7 +300,7 @@ userSchema.virtual('reviews', {
   localField: '_id',
 });
 
-const setImageURL = (doc) => {
+/*const setImageURL = (doc) => {
   if (doc.photo) {
     const photoUrl = `${process.env.BASE_URL}/photo/${doc.photo}`;
     doc.photo = photoUrl;
@@ -324,7 +324,7 @@ const setImageURL = (doc) => {
 // findOne, findAll and update
 userSchema.post('init', (doc) => {
   setImageURL(doc);
-});
+});*/
 
 userSchema.plugin(findOrCreate);
 
