@@ -1,6 +1,5 @@
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
 const AppError = require('../utils/appError');
 
 // Configure Cloudinary
@@ -21,15 +20,70 @@ const multerOptions = () => {
     }
   };
 
+  const maxSize = 5 * 1024 * 1024;
+
   const upload = multer({
     storage: multerStorage,
+    limits: { fileSize: maxSize },
     fileFilter: multerFilter,
   });
 
   return upload;
 };
 
-exports.uploadSingleImage = (fieldName) => multerOptions().single(fieldName);
+const uploadToCloudinary = (file) => {
+  return new Promise((resolve, reject) => {
+    cloudinary.uploader
+      .upload_stream((error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
+        }
+      })
+      .end(file.buffer);
+  });
+};
 
-exports.uploadMixOfImages = (arrayOfFields) =>
-  multerOptions().fields(arrayOfFields);
+exports.uploadSingleImage = (fieldName) => {
+  const upload = multerOptions().single(fieldName);
+
+  return async (req, res, next) => {
+    upload(req, res, async (error) => {
+      if (error) {
+        next(error);
+      } else {
+        try {
+          const result = await uploadToCloudinary(req.file);
+          req.fileUrl = result.secure_url;
+          next();
+        } catch (error) {
+          next(error);
+        }
+      }
+    });
+  };
+};
+
+exports.uploadMixOfImages = (arrayOfFields) => {
+  const upload = multerOptions().fields(arrayOfFields);
+
+  return async (req, res, next) => {
+    upload(req, res, async (error) => {
+      if (error) {
+        next(error);
+      } else {
+        try {
+          const promises = arrayOfFields.map((fieldName) => {
+            return uploadToCloudinary(req.files[fieldName][0]);
+          });
+          const results = await Promise.all(promises);
+          req.fileUrls = results.map((result) => result.secure_url);
+          next();
+        } catch (error) {
+          next(error);
+        }
+      }
+    });
+  };
+};
