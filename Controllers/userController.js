@@ -1,5 +1,4 @@
 const sharp = require('sharp');
-const { v2: cloudinary } = require('cloudinary');
 const User = require('../models/userModel');
 const Post = require('../models/postModel');
 const catchAsync = require('../utils/catchAync');
