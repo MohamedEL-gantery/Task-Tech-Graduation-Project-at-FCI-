@@ -1,5 +1,6 @@
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
+const { Readable } = require('stream');
 const AppError = require('../utils/appError');
 
 // Configure Cloudinary
@@ -32,21 +33,7 @@ const multerOptions = () => {
 };
 
 const uploadToCloudinary = async (fileBuffer) => {
-  let buffer;
-
-  if (typeof fileBuffer === 'object' && fileBuffer.constructor === Object) {
-    // If the file buffer is an object, assume it is a JSON object and convert it to a string
-    const jsonString = JSON.stringify(fileBuffer);
-
-    // Convert the string to a buffer
-    buffer = Buffer.from(jsonString, 'utf8');
-  } else if (typeof fileBuffer === 'string') {
-    // If the file buffer is a string, convert it to a buffer
-    buffer = Buffer.from(fileBuffer, 'utf8');
-  } else {
-    // Otherwise, assume that the file buffer is already a buffer or a buffer-like object
-    buffer = Buffer.from(fileBuffer);
-  }
+  const buffer = Buffer.from(fileBuffer);
 
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
@@ -62,7 +49,11 @@ const uploadToCloudinary = async (fileBuffer) => {
       }
     );
 
-    buffer.pipe(uploadStream);
+    const readable = new Readable();
+    readable.push(buffer);
+    readable.push(null);
+
+    readable.pipe(uploadStream);
   });
 };
 
