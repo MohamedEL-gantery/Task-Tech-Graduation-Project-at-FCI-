@@ -24,7 +24,8 @@ exports.resizePortfolioImages = catchAsync(async (req, res, next) => {
 
   await Promise.all(
     req.files.images.map(async (file, i) => {
-      const resizedImage = await sharp(file.buffer)
+      const buffer = Buffer.from(file.buffer); // convert ArrayBuffer to Buffer
+      const resizedImage = await sharp(buffer)
         .resize(800, 800, { fit: 'inside' })
         .jpeg({ quality: 90 })
         .toBuffer();
@@ -38,6 +39,7 @@ exports.resizePortfolioImages = catchAsync(async (req, res, next) => {
   );
   next();
 });
+
 exports.UserPortfolio = catchAsync(async (req, res, next) => {
   // 1) Create error if user POSTs password data
   if (req.body.password || req.body.passwordConfirm) {
