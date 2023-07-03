@@ -1,4 +1,5 @@
 const sharp = require('sharp');
+const { v2: cloudinary } = require('cloudinary');
 const User = require('../models/userModel');
 const Post = require('../models/postModel');
 const catchAsync = require('../utils/catchAync');
@@ -23,15 +24,9 @@ exports.resizePortfolioImages = catchAsync(async (req, res, next) => {
 
   await Promise.all(
     req.files.images.map(async (file, i) => {
-      const filename = `user-${req.user.id}-${Date.now()}-${i + 1}.jpeg`;
+      const result = await uploadImageMiddleware.uploadToCloudinary(file);
 
-      await sharp(file.buffer)
-        .resize(800, 800)
-        .toFormat('jpeg')
-        .jpeg({ quality: 90 })
-        .toFile(`public/portfolio/${filename}`);
-
-      req.body.images.push(filename);
+      req.body.images.push(result.secure_url);
     })
   );
   next();

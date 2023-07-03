@@ -75,7 +75,7 @@ exports.uploadMixOfImages = (arrayOfFields) => {
       } else {
         try {
           const promises = arrayOfFields.map((field) => {
-            return uploadToCloudinary(req.files[field.name]);
+            return uploadToCloudinary(req.files[field.name][0]);
           });
           const results = await Promise.all(promises);
           req.fileUrls = results.map((result) => result.secure_url);
