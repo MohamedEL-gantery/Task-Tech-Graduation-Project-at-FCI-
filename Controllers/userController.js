@@ -328,12 +328,27 @@ exports.searchUser = catchAsync(async (req, res, next) => {
 //related post
 exports.relatedPosts = catchAsync(async (req, res, next) => {
   if (!req.params.id) req.params.id = req.user.id;
+  const documentsCounts = await User.countDocuments();
   const currentUser = await User.findById(req.params.id);
+  // const features = await Post.find({ softwareTool: currentUser.skills });
+  //EXCUTE QUERY
+  const features = new APIFeatures(
+    Post.find({ softwareTool: currentUser.skills }),
+    req.query
+  )
+    .filter()
+    .sort()
+    .limitFields()
+    .search()
+    .paginate(documentsCounts);
 
-  const posts = await Post.find({ softwareTool: currentUser.skills });
+  const { query, paginationResult } = features;
+  const posts = await query;
 
   res.status(200).json({
     status: 'success',
+    paginationResult,
+    results: posts.length,
     data: {
       posts,
     },
