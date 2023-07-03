@@ -1,6 +1,6 @@
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
-const { Readable } = require('stream');
+const { isWebUri, isImage } = require('cloudinary').utils;
 const AppError = require('../utils/appError');
 
 // Configure Cloudinary
@@ -66,10 +66,9 @@ const uploadToCloudinary = async (fileBuffer) => {
     );
 
     // Check if the file is a valid image file
-    const isImage =
-      cloudinary.utils.isWebUri(buffer) && cloudinary.utils.isImage(buffer);
+    const isValidImage = isWebUri(buffer) && isImage(buffer);
 
-    if (!isImage) {
+    if (!isValidImage) {
       const error = new Error('Invalid image file');
       console.error('Error uploading file:', error);
       reject(error);
