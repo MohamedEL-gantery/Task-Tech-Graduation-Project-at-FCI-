@@ -56,12 +56,25 @@ const uploadToCloudinary = async (fileBuffer) => {
       },
       (error, result) => {
         if (error) {
+          console.error('Error uploading file:', error);
           reject(error);
         } else {
+          console.log('File uploaded successfully:', result);
           resolve(result);
         }
       }
     );
+
+    // Check if the file is a valid image file
+    const isImage =
+      cloudinary.utils.isWebUri(buffer) && cloudinary.utils.isImage(buffer);
+
+    if (!isImage) {
+      const error = new Error('Invalid image file');
+      console.error('Error uploading file:', error);
+      reject(error);
+      return;
+    }
 
     uploadStream.end(buffer);
   });
