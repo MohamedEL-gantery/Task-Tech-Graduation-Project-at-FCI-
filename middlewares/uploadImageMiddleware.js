@@ -31,17 +31,23 @@ const multerOptions = () => {
   return upload;
 };
 
-const uploadToCloudinary = (file) => {
+const uploadToCloudinary = async (fileBuffer) => {
   return new Promise((resolve, reject) => {
-    cloudinary.uploader
-      .upload_stream((error, result) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: 'public',
+      },
+      (error, result) => {
         if (error) {
           reject(error);
         } else {
           resolve(result);
         }
-      })
-      .end(file.buffer);
+      }
+    );
+
+    const buffer = Buffer.from(fileBuffer); // Convert ArrayBuffer to Buffer
+    buffer.pipe(uploadStream); // Pipe the buffer to the upload stream
   });
 };
 
