@@ -300,32 +300,6 @@ userSchema.virtual('reviews', {
   localField: '_id',
 });
 
-const setImageURL = (doc) => {
-  if (doc.photo) {
-    const photoUrl = `${process.env.BASE_URL}/photo/${doc.photo}`;
-    doc.photo = photoUrl;
-  }
-
-  if (doc.cv) {
-    const cvUrl = `${process.env.BASE_URL}/cv/${doc.cv}`;
-    doc.cv = cvUrl;
-  }
-
-  if (doc.images) {
-    const imagesList = [];
-    doc.images.forEach((image) => {
-      const imageUrl = `${process.env.BASE_URL}/portfolio/${image}`;
-      imagesList.push(imageUrl);
-    });
-    doc.images = imagesList;
-  }
-};
-
-// findOne, findAll and update
-userSchema.post('init', (doc) => {
-  setImageURL(doc);
-});
-
 userSchema.plugin(findOrCreate);
 
 const User = mongoose.model('User', userSchema);
