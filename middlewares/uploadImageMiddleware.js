@@ -87,3 +87,5 @@ exports.uploadMixOfImages = (arrayOfFields) => {
     });
   };
 };
+
+exports.uploadToCloudinary = uploadToCloudinary;
