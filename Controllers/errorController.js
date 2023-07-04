@@ -9,10 +9,12 @@ const handleDuplicateFieldsDB = (err) => {
   if (!err || !err.errmsg) {
     return new AppError('Unknown error occurred', 500);
   }
+  /*console.log(err.errmsg);
+  console.log(err);*/
   const value = err.errmsg.match(/(["'])(\\?.)*?\1/);
   console.log(value);
   if (!value) {
-    return new AppError('Unknown error occurred', 500);
+    return new AppError('error occurred', 500);
   }
 
   const message = `Duplicate field value: ${value}. Please use another value!`;
