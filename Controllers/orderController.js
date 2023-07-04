@@ -31,7 +31,7 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
           product_data: {
             name: `${service.name} `,
             description: service.description,
-            attachFile: service.attachFile,
+            images: service.attachFile,
           },
         },
       },
