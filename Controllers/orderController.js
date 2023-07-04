@@ -34,11 +34,15 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
   const session = await stripe.checkout.sessions.create({
     line_items: [
       {
-        name: service.name,
-        description: service.description,
-        images,
-        amount: totalServicePrice * 100,
-        currency: 'egp',
+        price_data: {
+          currency: 'egp',
+          product_data: {
+            name: service.name,
+            description: service.description,
+            images,
+          },
+          unit_amount: totalServicePrice * 100,
+        },
         quantity: 1,
       },
     ],
