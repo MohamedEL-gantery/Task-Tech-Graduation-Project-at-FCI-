@@ -65,11 +65,14 @@ exports.uploadUserPhoto = uploadImageMiddleware.uploadSingleImage('photo');
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
 
-  const result = await uploadImageMiddleware.uploadToCloudinary(req.file);
+  try {
+    const result = await uploadImageMiddleware.uploadToCloudinary(req.file);
 
-  req.body.photo = result.secure_url;
-
-  next();
+    req.body.photo = result.secure_url;
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 exports.userPhoto = catchAsync(async (req, res, next) => {
