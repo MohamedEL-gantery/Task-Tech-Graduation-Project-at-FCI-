@@ -122,4 +122,4 @@ exports.uploadMixOfImages = (arrayOfFields) => {
   };
 };
 
-module.exports = { uploadToCloudinary };
+exports.uploadToCloudinary = uploadToCloudinary;
