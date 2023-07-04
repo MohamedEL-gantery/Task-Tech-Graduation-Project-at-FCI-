@@ -10,7 +10,7 @@ cloudinary.config({
 });
 
 const multerOptions = () => {
-  const Storage = multer.memoryStorage();
+  const storage = multer.memoryStorage();
 
   // Filter
   function checkFileType(file, cb) {
@@ -20,14 +20,14 @@ const multerOptions = () => {
     if (mimetype) {
       return cb(null, true);
     } else {
-      cb(new AppError('pdf Only!', 400));
+      cb(new AppError('PDF Only!', 400));
     }
   }
 
   const maxSize = 5 * 1024 * 1024;
 
   const upload = multer({
-    storage: Storage,
+    storage,
     limits: { fileSize: maxSize },
     fileFilter: function (req, file, cb) {
       checkFileType(file, cb);
@@ -65,7 +65,9 @@ exports.uploadPdf = (fieldName) => {
 
   return async (req, res, next) => {
     upload(req, res, async (error) => {
-      if (error) {
+      if (error instanceof multer.MulterError) {
+        next(new AppError('File too large', 400));
+      } else if (error) {
         next(error);
       } else {
         try {
