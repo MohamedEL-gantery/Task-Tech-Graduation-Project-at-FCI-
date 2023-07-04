@@ -20,6 +20,11 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
 
   const totalServicePrice = servicePrice + taxSalary;
 
+  let images = [];
+  if (Array.isArray(service.attachFile) && service.attachFile.length > 0) {
+    images = service.attachFile;
+  }
+
   // 3) create stripe checkout session
   const session = await stripe.checkout.sessions.create({
     line_items: [
@@ -31,7 +36,7 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
           product_data: {
             name: `${service.name} `,
             description: service.description,
-            images: service.attachFile,
+            images,
           },
         },
       },
