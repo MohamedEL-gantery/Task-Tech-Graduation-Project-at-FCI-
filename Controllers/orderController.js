@@ -39,7 +39,7 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
           product_data: {
             name: service.name,
             description: service.description,
-            images,
+            images: [images[0]], // use only the first image in the array
           },
           unit_amount: totalServicePrice * 100,
         },
