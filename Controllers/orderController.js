@@ -43,6 +43,7 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
             images,
           },
         },
+        images,
       },
     ],
     mode: 'payment',
