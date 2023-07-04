@@ -24,7 +24,8 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
   if (Array.isArray(service.attachFile) && service.attachFile.length > 0) {
     // Construct the URL of the Cloudinary image for each image in the attachFile array
     images = service.attachFile.map((image) => {
-      const imageUrl = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${image}`;
+      // Get the public URL of the Cloudinary image
+      const imageUrl = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${image.public_id}.${image.format}`;
       return { url: imageUrl };
     });
   }
