@@ -21,16 +21,11 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
 
   const totalServicePrice = servicePrice + taxSalary;
 
-  let imageUrl;
-  if (Array.isArray(service.attachFile) && service.attachFile.length > 0) {
-    const result = await cloudinary.uploader.upload(
-      service.attachFile[0].path,
-      {
-        folder: 'my-folder',
-      }
-    );
-    imageUrl = result.secure_url;
-  }
+  // 3) get image URL from Cloudinary
+  const imageUrl =
+    Array.isArray(service.attachFile) && service.attachFile.length > 0
+      ? `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${service.attachFile[0].public_id}.${service.attachFile[0].format}`
+      : null;
 
   // 3) create stripe checkout session
   const session = await stripe.checkout.sessions.create({
