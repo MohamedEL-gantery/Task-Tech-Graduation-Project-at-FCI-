@@ -11,7 +11,7 @@ const handleDuplicateFieldsDB = (err) => {
   }
   console.log(err.errmsg);
   console.log(err);
-  const value = err.errmsg.match(/(["'])(\\?.)*?\1/);
+  const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
   console.log(value);
   if (!value) {
     return new AppError('error occurred', 500);
