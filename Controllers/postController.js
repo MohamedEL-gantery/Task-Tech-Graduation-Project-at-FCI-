@@ -1,6 +1,5 @@
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
-const sharp = require('sharp');
 const User = require('../models/userModel');
 const Post = require('../models/postModel');
 const APIFeatures = require('../utils/apiFeatures');
@@ -12,18 +11,14 @@ exports.uploadFile = uploadImageMiddleware.uploadSingleImage('attachFile');
 
 exports.resizeAttachFile = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
+  try {
+    const result = await uploadImageMiddleware.uploadToCloudinary(req.file);
 
-  const filename = `user-${req.user.id}-${Date.now()}.jpeg`;
-
-  await sharp(req.file.buffer)
-    .resize(500, 500)
-    .toFormat('jpeg')
-    .jpeg({ quality: 90 })
-    .toFile(`public/attachFile/${filename}`);
-
-  req.body.attachFile = filename;
-
-  next();
+    req.body.photo = result.secure_url;
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 exports.createPost = catchAsync(async (req, res, next) => {

@@ -1,4 +1,3 @@
-const sharp = require('sharp');
 const User = require('../models/userModel');
 const Post = require('../models/postModel');
 const catchAsync = require('../utils/catchAync');
@@ -6,6 +5,13 @@ const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/apiFeatures');
 const uploadImageMiddleware = require('../middlewares/uploadImageMiddleware');
 const uploadPdfMiddleware = require('../middlewares/uploadPdfMiddlewares');
+
+exports.alisTopUser = (req, res, next) => {
+  (req.query.limit = '4'),
+    (req.query.sort = '-ratingsAverage'),
+    (req.query.fields = 'name,ratingsAverage,photo,skills,ratingsQuantity,job');
+  next();
+};
 
 exports.getMe = (req, res, next) => {
   req.params.id = req.user.id;
@@ -15,7 +21,7 @@ exports.getMe = (req, res, next) => {
 exports.uploadUserPortfolio = uploadImageMiddleware.uploadMixOfImages([
   { name: 'images', maxCount: 6 },
 ]);
-// Filter
+
 exports.resizePortfolioImages = catchAsync(async (req, res, next) => {
   if (!req.files.images) return next();
 
@@ -64,7 +70,6 @@ exports.uploadUserPhoto = uploadImageMiddleware.uploadSingleImage('photo');
 
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
-
   try {
     const result = await uploadImageMiddleware.uploadToCloudinary(req.file);
 
@@ -226,13 +231,6 @@ exports.deleteUser = catchAsync(async (req, res, next) => {
     data: null,
   });
 });
-
-exports.alisTopUser = (req, res, next) => {
-  (req.query.limit = '4'),
-    (req.query.sort = '-ratingsAverage'),
-    (req.query.fields = 'name,ratingsAverage,photo,skills,ratingsQuantity,job');
-  next();
-};
 
 // follow user
 exports.followUser = catchAsync(async (req, res, next) => {

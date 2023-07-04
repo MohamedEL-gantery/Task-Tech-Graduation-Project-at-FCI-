@@ -113,21 +113,5 @@ postSchema.virtual('comments', {
   localField: '_id',
 });
 
-const setImageURL = (doc) => {
-  if (doc.attachFile) {
-    const attachFileUrl = `${process.env.BASE_URL}/attachFile/${doc.attachFile}`;
-    doc.attachFile = attachFileUrl;
-  }
-};
-// findOne, findAll and update
-postSchema.post('init', (doc) => {
-  setImageURL(doc);
-});
-
-// create
-postSchema.post('save', (doc) => {
-  setImageURL(doc);
-});
-
 const Post = mongoose.model('Post', postSchema);
 module.exports = Post;

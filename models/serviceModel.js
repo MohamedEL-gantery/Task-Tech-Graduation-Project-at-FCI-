@@ -71,22 +71,6 @@ serviceSchema.pre(/^find/, function (next) {
   next();
 });
 
-const setImageURL = (doc) => {
-  if (doc.attachFile) {
-    const attachFileUrl = `${process.env.BASE_URL}/attachFile/${doc.attachFile}`;
-    doc.attachFile = attachFileUrl;
-  }
-};
-// findOne, findAll and update
-serviceSchema.post('init', (doc) => {
-  setImageURL(doc);
-});
-
-// create
-serviceSchema.post('save', (doc) => {
-  setImageURL(doc);
-});
-
 // Document Middleware: runs before .save() and .create()
 serviceSchema.pre('save', function (next) {
   this.slug = slugify(this.name, { lower: true });

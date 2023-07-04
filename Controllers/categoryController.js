@@ -1,27 +1,22 @@
-const sharp = require('sharp');
 const Category = require('../models/categoryModel');
 const catchAsync = require('../utils/catchAync');
 const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/apiFeatures');
 const uploadImageMiddleware = require('../middlewares/uploadImageMiddleware');
-const { v4: uuidv4 } = require('uuid');
 
 exports.uploadCategoryPhoto = uploadImageMiddleware.uploadSingleImage('photo');
 
 exports.resizeCategoryPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
 
-  const filename = `category-${uuidv4()}-${Date.now()}.jpeg`;
+  try {
+    const result = await uploadImageMiddleware.uploadToCloudinary(req.file);
 
-  await sharp(req.file.buffer)
-    .resize(500, 500)
-    .toFormat('jpeg')
-    .jpeg({ quality: 90 })
-    .toFile(`public/category/${filename}`);
-
-  req.body.photo = filename;
-
-  next();
+    req.body.photo = result.secure_url;
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 exports.createCategory = catchAsync(async (req, res, next) => {
