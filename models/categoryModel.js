@@ -5,8 +5,7 @@ const categorySchema = new mongoose.Schema(
   {
     name: {
       type: String,
-      unique: true,
-      required: [true, 'Category must have a unique name'],
+      required: [true, 'Category must have a name'],
     },
     slug: String,
     photo: {
@@ -23,9 +22,7 @@ const categorySchema = new mongoose.Schema(
       required: [true, 'Category must have a nSkills'],
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
 // Document Middleware: runs before .save() and .create()
