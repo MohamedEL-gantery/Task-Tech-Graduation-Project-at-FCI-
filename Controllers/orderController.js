@@ -21,10 +21,10 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
 
   const totalServicePrice = servicePrice + taxSalary;
 
-  // 3) get image URL from Cloudinary
+  // 3) get image URL
   const imageUrl =
     Array.isArray(service.attachFile) && service.attachFile.length > 0
-      ? `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${service.attachFile[0].public_id}.${service.attachFile[0].format}`
+      ? service.attachFile[0].url
       : null;
 
   // 3) create stripe checkout session
@@ -55,6 +55,7 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
   res.status(200).json({
     status: 'success',
     session,
+    imageUrl: imageUrl,
   });
 });
 
