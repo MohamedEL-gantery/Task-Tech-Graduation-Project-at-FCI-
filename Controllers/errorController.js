@@ -9,8 +9,8 @@ const handleDuplicateFieldsDB = (err) => {
   if (!err || !err.errmsg) {
     return new AppError('Unknown error occurred', 500);
   }
-  /*console.log(err.errmsg);
-  console.log(err);*/
+  console.log(err.errmsg);
+  console.log(err);
   const value = err.errmsg.match(/(["'])(\\?.)*?\1/);
   console.log(value);
   if (!value) {
