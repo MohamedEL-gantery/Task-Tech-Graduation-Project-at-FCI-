@@ -65,15 +65,9 @@ exports.uploadUserPhoto = uploadImageMiddleware.uploadSingleImage('photo');
 exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
 
-  const filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+  const result = await uploadImageMiddleware.uploadToCloudinary(req.file);
 
-  await sharp(req.file.buffer)
-    .resize(500, 500)
-    .toFormat('jpeg')
-    .jpeg({ quality: 90 })
-    .toFile(`public/users/${filename}`);
-
-  req.body.photo = filename;
+  req.body.photo = result.secure_url;
 
   next();
 });
