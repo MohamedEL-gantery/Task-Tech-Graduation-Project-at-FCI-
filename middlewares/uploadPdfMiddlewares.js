@@ -37,13 +37,14 @@ const multerOptions = () => {
   return upload;
 };
 
-const uploadToCloudinary = (req, file) => {
+const uploadToCloudinary = (publicId, file) => {
   return new Promise((resolve, reject) => {
     cloudinary.uploader
       .upload_stream(
         {
           resource_type: 'raw',
           folder: 'pdfs',
+          public_id: publicId,
           format: 'pdf',
           invalidate: true,
         },
@@ -68,7 +69,8 @@ exports.uploadPdf = (fieldName) => {
         next(error);
       } else {
         try {
-          const result = await uploadToCloudinary(req, req.file);
+          const publicId = `pdf-${Date.now()}-${req.user.id}`;
+          const result = await uploadToCloudinary(publicId, req.file);
           req.fileUrl = result.secure_url;
           next();
         } catch (error) {
