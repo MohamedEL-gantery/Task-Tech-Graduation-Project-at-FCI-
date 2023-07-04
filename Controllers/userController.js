@@ -19,25 +19,16 @@ exports.uploadUserPortfolio = uploadImageMiddleware.uploadMixOfImages([
 exports.resizePortfolioImages = catchAsync(async (req, res, next) => {
   if (!req.files.images) return next();
 
-  req.body.images = []; // initialize an empty array to store the Cloudinary URLs for each image
+  req.body.images = [];
 
   await Promise.all(
     req.files.images.map(async (file, i) => {
-      const buffer = Buffer.from(file.buffer); // convert ArrayBuffer to Buffer
-      const resizedImage = await sharp(buffer)
-        .resize(800, 800, { fit: 'inside' })
-        .jpeg({ quality: 90 })
-        .toBuffer(); // resize the image and convert it to a buffer
+      const result = await uploadImageMiddleware.uploadToCloudinary(file);
 
-      const result = await uploadImageMiddleware.uploadToCloudinary(
-        resizedImage
-      ); //      upload the resized image buffer to Cloudinary
-
-      req.body.images.push(result.secure_url); // add the Cloudinary URL for the resized image to the array
+      req.body.images.push(result.secure_url);
     })
   );
-
-  next(); // call the next middleware or route handler
+  next();
 });
 
 exports.UserPortfolio = catchAsync(async (req, res, next) => {
