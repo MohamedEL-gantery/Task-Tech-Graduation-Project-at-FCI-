@@ -130,7 +130,7 @@ exports.uploadUserCV = catchAsync(async (req, res, next) => {
   }
   // 2) Filtered
   const filteredBody = filterObj(req.body);
-  if (req.file) filteredBody.cv = req.file.filename;
+  if (req.file) filteredBody.cv = req.fileUrl;
   // 3) Update user document
   const data = await User.findByIdAndUpdate(req.user.id, filteredBody, {
     new: true, // to return new document
