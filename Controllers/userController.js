@@ -31,7 +31,7 @@ exports.resizePortfolioImages = catchAsync(async (req, res, next) => {
 
       const result = await uploadImageMiddleware.uploadToCloudinary(
         resizedImage
-      ); // upload the resized image buffer to Cloudinary
+      ); //      upload the resized image buffer to Cloudinary
 
       req.body.images.push(result.secure_url); // add the Cloudinary URL for the resized image to the array
     })

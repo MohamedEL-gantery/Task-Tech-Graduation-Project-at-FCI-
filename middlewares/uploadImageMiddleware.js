@@ -32,7 +32,7 @@ const multerOptions = () => {
   return upload;
 };
 
-exports.uploadToCloudinary = async (fileBuffer) => {
+const uploadToCloudinary = async (fileBuffer) => {
   let buffer;
 
   if (typeof fileBuffer === 'object' && fileBuffer.constructor === Object) {
@@ -121,3 +121,5 @@ exports.uploadMixOfImages = (arrayOfFields) => {
     });
   };
 };
+
+module.exports = { uploadToCloudinary };
