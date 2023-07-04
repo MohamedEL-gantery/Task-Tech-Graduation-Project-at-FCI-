@@ -14,7 +14,7 @@ exports.resizeAttachFile = catchAsync(async (req, res, next) => {
   try {
     const result = await uploadImageMiddleware.uploadToCloudinary(req.file);
 
-    req.body.photo = result.secure_url;
+    req.body.attachFile = result.secure_url;
     next();
   } catch (error) {
     next(error);

@@ -44,7 +44,6 @@ const uploadToCloudinary = (req, file) => {
         {
           resource_type: 'raw',
           folder: 'pdfs',
-          public_id: `user-${req.user.id}-${Date.now()}`,
           format: 'pdf',
           invalidate: true,
         },
