@@ -6,6 +6,9 @@ const handleCastErrorDB = (err) => {
 };
 
 const handleDuplicateFieldsDB = (err) => {
+  if (!err.errmsg) {
+    return new AppError('Unknown error occurred', 500);
+  }
   const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
   console.log(value);
 
