@@ -31,6 +31,7 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
           product_data: {
             name: `${service.name} `,
             description: service.description,
+            attachFile: service.attachFile,
           },
         },
       },
@@ -38,7 +39,7 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
     mode: 'payment',
     payment_method_types: ['card'],
     success_url: `${req.protocol}://${req.get('host')}/`,
-    cancel_url: `${req.protocol}://${req.get('host')}/service/${service.slug}`,
+    cancel_url: `${req.protocol}://${req.get('host')}/`,
     customer_email: req.user.email,
     client_reference_id: req.params.serviceId,
   });
