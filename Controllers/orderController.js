@@ -22,9 +22,12 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
 
   let images = [];
   if (Array.isArray(service.attachFile) && service.attachFile.length > 0) {
-    images = service.attachFile;
+    // Construct the URL of the Cloudinary image for each image in the attachFile array
+    images = service.attachFile.map((image) => {
+      const imageUrl = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${image}`;
+      return { url: imageUrl };
+    });
   }
-
   // 3) create stripe checkout session
   const session = await stripe.checkout.sessions.create({
     line_items: [
