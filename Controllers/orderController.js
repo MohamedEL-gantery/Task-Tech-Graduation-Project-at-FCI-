@@ -20,16 +20,11 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
 
   const totalServicePrice = servicePrice + taxSalary;
 
-  let images = [];
+  let imageUrl;
   if (Array.isArray(service.attachFile) && service.attachFile.length > 0) {
-    // Construct the URL of the Cloudinary image for each image in the attachFile array
-    images = service.attachFile.map((image) => {
-      // Get the public URL of the Cloudinary image
-      const imageUrl = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${image.public_id}.${image.format}`;
-      return imageUrl;
-    });
+    // Get the public URL of the Cloudinary image for the first image in the attachFile array
+    imageUrl = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${service.attachFile[0].public_id}.${service.attachFile[0].format}`;
   }
-
   // 3) create stripe checkout session
   const session = await stripe.checkout.sessions.create({
     line_items: [
@@ -39,7 +34,7 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
           product_data: {
             name: service.name,
             description: service.description,
-            images: [images[0]], // use only the first image in the array
+            images: [imageUrl],
           },
           unit_amount: totalServicePrice * 100,
         },
