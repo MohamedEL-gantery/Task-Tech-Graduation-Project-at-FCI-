@@ -50,7 +50,9 @@ exports.uploadSingleImage = (fieldName) => {
 
   return async (req, res, next) => {
     upload(req, res, async (error) => {
-      if (error) {
+      if (error instanceof multer.MulterError) {
+        next(new AppError('photo too large to upload', 400));
+      } else if (error) {
         next(error);
       } else {
         try {
@@ -70,7 +72,9 @@ exports.uploadMixOfImages = (arrayOfFields) => {
 
   return async (req, res, next) => {
     upload(req, res, async (error) => {
-      if (error) {
+      if (error instanceof multer.MulterError) {
+        next(new AppError('photo too large to upload', 400));
+      } else if (error) {
         next(error);
       } else {
         try {

@@ -37,25 +37,16 @@ const multerOptions = () => {
   return upload;
 };
 
-const uploadToCloudinary = (publicId, file) => {
+const uploadToCloudinary = (file) => {
   return new Promise((resolve, reject) => {
     cloudinary.uploader
-      .upload_stream(
-        {
-          resource_type: 'raw',
-          folder: 'pdfs',
-          public_id: publicId,
-          format: 'pdf',
-          invalidate: true,
-        },
-        (error, result) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(result);
-          }
+      .upload_stream((error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result);
         }
-      )
+      })
       .end(file.buffer);
   });
 };
@@ -66,13 +57,12 @@ exports.uploadPdf = (fieldName) => {
   return async (req, res, next) => {
     upload(req, res, async (error) => {
       if (error instanceof multer.MulterError) {
-        next(new AppError('File too large', 400));
+        next(new AppError('pdf too large to upload', 400));
       } else if (error) {
         next(error);
       } else {
         try {
-          const publicId = `pdf-${Date.now()}-${req.user.id}`;
-          const result = await uploadToCloudinary(publicId, req.file);
+          const result = await uploadToCloudinary(req.file);
           req.fileUrl = result.secure_url;
           next();
         } catch (error) {
