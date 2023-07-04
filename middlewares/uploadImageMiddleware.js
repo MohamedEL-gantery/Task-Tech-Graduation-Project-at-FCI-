@@ -1,6 +1,6 @@
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
-const { isWebUri, isImage } = require('cloudinary').utils;
+const { utils } = require('cloudinary');
 const AppError = require('../utils/appError');
 
 // Configure Cloudinary
@@ -32,7 +32,7 @@ const multerOptions = () => {
   return upload;
 };
 
-const uploadToCloudinary = async (fileBuffer) => {
+exports.uploadToCloudinary = async (fileBuffer) => {
   let buffer;
 
   if (typeof fileBuffer === 'object' && fileBuffer.constructor === Object) {
@@ -66,7 +66,7 @@ const uploadToCloudinary = async (fileBuffer) => {
     );
 
     // Check if the file is a valid image file
-    const isValidImage = isWebUri(buffer) && isImage(buffer);
+    const isValidImage = utils.isWebUri(buffer) && utils.isImage(buffer);
 
     if (!isValidImage) {
       const error = new Error('Invalid image file');
@@ -121,5 +121,3 @@ exports.uploadMixOfImages = (arrayOfFields) => {
     });
   };
 };
-
-exports.uploadToCloudinary = uploadToCloudinary;
