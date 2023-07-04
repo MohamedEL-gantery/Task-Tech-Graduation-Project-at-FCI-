@@ -37,7 +37,7 @@ const multerOptions = () => {
   return upload;
 };
 
-const uploadToCloudinary = (file) => {
+const uploadToCloudinary = (req, file) => {
   return new Promise((resolve, reject) => {
     cloudinary.uploader
       .upload_stream(
@@ -69,7 +69,7 @@ exports.uploadPdf = (fieldName) => {
         next(error);
       } else {
         try {
-          const result = await uploadToCloudinary(req.file);
+          const result = await uploadToCloudinary(req, req.file);
           req.fileUrl = result.secure_url;
           next();
         } catch (error) {
