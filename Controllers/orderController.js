@@ -1,4 +1,5 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+const cloudinary = require('cloudinary').v2;
 const Order = require('../models/orderModel');
 const User = require('../models/userModel');
 const Service = require('../models/serviceModel');
@@ -20,10 +21,15 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
 
   const totalServicePrice = servicePrice + taxSalary;
 
-  let imageUrl = '';
+  let imageUrl;
   if (Array.isArray(service.attachFile) && service.attachFile.length > 0) {
-    // Get the public URL of the Cloudinary image for the first image in the attachFile array
-    imageUrl = `https://res.cloudinary.com/${process.env.CLOUDINARY_CLOUD_NAME}/image/upload/${service.attachFile[0].public_id}.${service.attachFile[0].format}`;
+    const result = await cloudinary.uploader.upload(
+      service.attachFile[0].path,
+      {
+        folder: 'my-folder',
+      }
+    );
+    imageUrl = result.secure_url;
   }
 
   // 3) create stripe checkout session
