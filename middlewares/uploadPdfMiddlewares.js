@@ -38,6 +38,10 @@ const multerOptions = () => {
 };
 
 const uploadToCloudinary = (file) => {
+  if (!file || !file.buffer) {
+    return Promise.resolve({});
+  }
+
   return new Promise((resolve, reject) => {
     cloudinary.uploader
       .upload_stream((error, result) => {

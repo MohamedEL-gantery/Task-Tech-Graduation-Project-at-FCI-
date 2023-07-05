@@ -109,10 +109,10 @@ exports.updateReview = catchAsync(async (req, res, next) => {
     return next(new AppError('No Review found with that ID', 404));
   }
 
-  if (req.user.id != review.reviewer.id) {
+  if (req.user.role !== 'admin' && req.user.id != review.reviewer.id) {
     return next(
       new AppError(
-        'You do not have permission to perform this action, Only for the owner of this review',
+        'You do not have permission to perform this action. This action is only allowed for the owner of this post and admin.',
         401
       )
     );
@@ -139,10 +139,10 @@ exports.deleteReview = catchAsync(async (req, res, next) => {
     return next(new AppError('No Review found with that ID', 404));
   }
 
-  if (req.user.id != review.reviewer.id) {
+  if (req.user.role !== 'admin' && req.user.id != review.reviewer.id) {
     return next(
       new AppError(
-        'You do not have permission to perform this action, Only for the owner of this review',
+        'You do not have permission to perform this action. This action is only allowed for the owner of this post and admin.',
         401
       )
     );

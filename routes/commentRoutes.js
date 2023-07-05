@@ -8,8 +8,8 @@ router.use(authController.protect);
 
 router
   .route('/')
-  .get(commentController.getAllComments)
-  .post(authController.restrictTo('user'), commentController.createComment);
+  .post(authController.restrictTo('user'), commentController.createComment)
+  .get(commentController.getAllComments);
 
 router.get('/:id', commentController.getComment);
 

@@ -14,13 +14,13 @@ router.use('/:postId/comments', commentRouter);
 
 router
   .route('/')
-  .get(postController.getAllPosts)
   .post(
     authController.restrictTo('user'),
     postController.uploadFile,
     postController.resizeAttachFile,
     postController.createPost
-  );
+  )
+  .get(postController.getAllPosts);
 
 router.get('/:id', postController.getPost);
 
