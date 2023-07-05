@@ -33,7 +33,7 @@ const multerOptions = () => {
 
 const uploadToCloudinary = (file) => {
   if (!file || !file.buffer) {
-    return Promise.resolve(null);
+    return Promise.resolve({});
   }
 
   return new Promise((resolve, reject) => {
