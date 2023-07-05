@@ -89,9 +89,16 @@ const postSchema = new mongoose.Schema(
       ref: 'User',
       required: [true, 'post Must Belong To User'],
     },
+    createdAt: {
+      type: Date,
+      default: Date.now(),
+    },
+    updatedAt: {
+      type: Date,
+      default: Date.now(),
+    },
   },
   {
-    timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   }
