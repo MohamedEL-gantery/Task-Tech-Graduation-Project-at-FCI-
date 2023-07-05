@@ -28,14 +28,14 @@ router
   .route('/:id')
   .patch(
     authController.restrictTo('user', 'admin'),
-    //postController.isOwner,
+    postController.isOwner,
     postController.uploadFile,
     postController.resizeAttachFile,
     postController.updatePost
   )
   .delete(
     authController.restrictTo('user', 'admin'),
-    //postController.isOwner,
+    postController.isOwner,
     postController.deletePost
   );
 
