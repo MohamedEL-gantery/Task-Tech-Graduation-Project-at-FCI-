@@ -33,6 +33,10 @@ const multerOptions = () => {
 
 const uploadToCloudinary = (file) => {
   return new Promise((resolve, reject) => {
+    if (!file || !file.buffer) {
+      reject(new Error('Invalid file'));
+    }
+
     cloudinary.uploader
       .upload_stream((error, result) => {
         if (error) {
