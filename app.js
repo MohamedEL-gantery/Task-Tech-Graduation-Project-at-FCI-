@@ -131,7 +131,7 @@ passport.deserializeUser(function (obj, done) {
 
 app.get('/', (req, res) => {
   res.send(
-    '<a href="/auth/google">Authenticate with Google </a> <br/> <a href="auth/facebook">Authenticate with Facebook </a>'
+    '<a href="/auth/google">Authenticate with Google </a> <br/> <a href="/auth/facebook">Authenticate with Facebook </a>'
   );
 });
 app.get('/auth/failure', (req, res) => {
