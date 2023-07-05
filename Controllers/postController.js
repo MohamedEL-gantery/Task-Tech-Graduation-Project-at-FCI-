@@ -125,6 +125,7 @@ exports.updatePost = catchAsync(async (req, res, next) => {
   if (!post) {
     return next(new AppError('No Post found with that ID', 404));
   }
+
   if (req.user.id != post.user.id) {
     return next(
       new AppError(
