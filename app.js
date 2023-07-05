@@ -153,7 +153,7 @@ app.get(
 );
 
 app.get(
-  '/google',
+  '/google/callback',
   passport.authenticate('google', {
     successRedirect: '/protected',
     failureRedirect: '/auth/failure',
