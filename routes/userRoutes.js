@@ -28,7 +28,7 @@ router.patch(
   '/createprofile/uploadphoto/me',
   authController.restrictTo('user'),
   userController.uploadUserPhoto,
-  userController.resizeUserPhoto,
+  //  userController.resizeUserPhoto,
   userController.userPhoto
 );
 
