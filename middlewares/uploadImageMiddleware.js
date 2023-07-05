@@ -31,12 +31,10 @@ const multerOptions = () => {
   return upload;
 };
 
-const uploadToCloudinary = (file) => {
-  return new Promise((resolve, reject) => {
-    if (!file || !file.buffer) {
-      reject(new Error('Invalid file'));
-    }
+const uploadToCloudinary = (file, next) => {
+  if (!file || !file.buffer) return next();
 
+  return new Promise((resolve, reject) => {
     cloudinary.uploader
       .upload_stream((error, result) => {
         if (error) {
