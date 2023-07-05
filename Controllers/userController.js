@@ -68,7 +68,7 @@ exports.UserPortfolio = catchAsync(async (req, res, next) => {
 // UPLOAD USER PHOTO
 exports.uploadUserPhoto = uploadImageMiddleware.uploadSingleImage('photo');
 
-/*exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
+exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
   if (!req.file) return next();
   try {
     const result = await uploadImageMiddleware.uploadToCloudinary(req.file);
@@ -78,7 +78,7 @@ exports.uploadUserPhoto = uploadImageMiddleware.uploadSingleImage('photo');
   } catch (error) {
     next(error);
   }
-});*/
+});
 
 exports.userPhoto = catchAsync(async (req, res, next) => {
   // 1) Create error if user POSTs password data
