@@ -16,11 +16,23 @@ passport.use(
       const user = await User.findOne({ email: profile.emails[0].value });
       if (!user) {
         // 2) prompt user to create a password
-        const { promptForPassword, promptForConfirmPassword } = await import(
-          'inquirer'
-        );
-        const password = await promptForPassword();
-        const confirmPassword = await promptForConfirmPassword(password);
+        const { prompt } = await import('inquirer');
+        const { password } = await prompt([
+          {
+            type: 'password',
+            name: 'password',
+            message: 'Enter your password:',
+            mask: '*',
+          },
+        ]);
+        const { confirmPassword } = await prompt([
+          {
+            type: 'password',
+            name: 'confirmPassword',
+            message: 'Confirm your password:',
+            mask: '*',
+          },
+        ]);
 
         // 3) create new user with the password and confirmPassword fields set to the user's input
         const newuser = await User.create({
