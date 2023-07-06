@@ -20,7 +20,7 @@ const multerOptions = () => {
     }
   };
 
-  const maxSize = 5 * 1024 * 1024;
+  const maxSize = 10 * 1024 * 1024;
 
   const upload = multer({
     storage: multerStorage,
