@@ -39,7 +39,6 @@ passport.use(
         console.log('user saved successfully to DB');
       } else {
         console.log('user already exists');
-
         // 4) If everything is ok, generate token
         createSendToken(user, 200, request, request.res);
       }
