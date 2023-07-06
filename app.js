@@ -132,7 +132,7 @@ passport.deserializeUser(function (obj, done) {
 
 app.get('/', (req, res) => {
   res.send(
-    '<a href="/auth/google">Authenticate with Google </a> <br/> <a href="/auth/facebook">Authenticate with Facebook </a>'
+    '<a href="/auth">Authenticate with Google </a> <br/> <a href="/auth/facebook">Authenticate with Facebook </a>'
   );
 });
 /*
@@ -161,7 +161,7 @@ app.get(
     failureRedirect: '/auth/failure',
   })
 );*/
-app.use('/auth', auth);
+
 //auth with facebook
 app.get('/auth/facebook', passport.authenticate('facebook'));
 app.get(
@@ -183,6 +183,7 @@ app.use('/api/v1/messages', messageRouter);
 app.use('/api/v1/orders', orderRouter);
 app.use('/api/v1/categorys', categoryRouter);
 app.use('/api/v1', frontRouter);
+app.use('/auth', auth);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

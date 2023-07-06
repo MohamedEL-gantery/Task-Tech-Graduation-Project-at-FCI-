@@ -43,19 +43,15 @@ passport.use(
 
 router.get(
   '/auth/google',
-  passport.authenticate('google', {
-    scope: ['profile', 'email'],
-  })
+  passport.authenticate('google', { scope: ['email', 'profile'] })
 );
 
 router.get(
-  '/auth/google/callback',
+  '/google/callback',
   passport.authenticate('google', {
-    failureRedirect: '/login',
-  }),
-  (request, response) => {
-    response.redirect('/dashboard');
-  }
+    successRedirect: '/protected',
+    failureRedirect: '/auth/failure',
+  })
 );
 
 module.exports = router;
