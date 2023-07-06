@@ -27,6 +27,7 @@ const commentRouter = require('./routes/commentRoutes');
 const chatRouter = require('./routes/chatRoutes');
 const messageRouter = require('./routes/messageRoutes');
 const orderRouter = require('./routes/orderRoutes');
+const frontRouter = require('./routes/frontRoutes');
 const { webhookCheckout } = require('./Controllers/orderController');
 
 // Start app
@@ -180,6 +181,7 @@ app.use('/api/v1/chats', chatRouter);
 app.use('/api/v1/messages', messageRouter);
 app.use('/api/v1/orders', orderRouter);
 app.use('/api/v1/categorys', categoryRouter);
+app.use('/api/v1', frontRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
