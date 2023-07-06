@@ -2,7 +2,6 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
 const User = require('../models/userModel');
 const createSendToken = require('../utils/createToken');
-const inquirer = require('inquirer');
 
 passport.use(
   new GoogleStrategy(
@@ -17,6 +16,9 @@ passport.use(
       const user = await User.findOne({ email: profile.emails[0].value });
       if (!user) {
         // 2) prompt user to create a password
+        const { promptForPassword, promptForConfirmPassword } = await import(
+          'inquirer'
+        );
         const password = await promptForPassword();
         const confirmPassword = await promptForConfirmPassword(password);
 
@@ -44,22 +46,3 @@ passport.use(
     }
   )
 );
-
-// prompt for password function
-const promptForPassword = async () => {
-  const { password } = await inquirer.prompt({
-    type: 'password',
-    message: 'Enter your Google password:',
-  });
-  return password;
-};
-
-// prompt for confirm password function
-const promptForConfirmPassword = async (password) => {
-  const { confirmPassword } = await inquirer.prompt({
-    type: 'password',
-    message: 'Confirm your Google password:',
-    validate: (input) => input === password || 'Passwords do not match',
-  });
-  return confirmPassword;
-};
