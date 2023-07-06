@@ -13,7 +13,7 @@ const passport = require('passport');
 const session = require('express-session');
 const MemoryStore = require('memorystore')(session);
 
-require('./services/authGoogle');
+const auth = require('./services/authGoogle');
 require('./services/passportFacebook');
 
 const AppError = require('./utils/appError');
@@ -135,6 +135,7 @@ app.get('/', (req, res) => {
     '<a href="/auth/google">Authenticate with Google </a> <br/> <a href="/auth/facebook">Authenticate with Facebook </a>'
   );
 });
+/*
 app.get('/auth/failure', (req, res) => {
   res.status(500).json({
     status: 'fail',
@@ -159,8 +160,8 @@ app.get(
     successRedirect: '/protected',
     failureRedirect: '/auth/failure',
   })
-);
-
+);*/
+app.use('/auth', auth);
 //auth with facebook
 app.get('/auth/facebook', passport.authenticate('facebook'));
 app.get(
