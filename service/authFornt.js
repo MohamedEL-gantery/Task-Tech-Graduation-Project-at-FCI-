@@ -48,7 +48,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   const options = { timeZone: 'Africa/Cairo' };
   const dateString = date.toLocaleString('en-US', options);
 
-  const message = `Hello ${newUser.name},\n Glad to have you. \n  Welcome to TASK-TECH \n We received a request to sign up on TASK-TECH in ${dateString}. \n We are thrilled to have you as a new member of our community.\n The TASK TECH Team`;
+  const message = `Hello ${newUser.name},\n Glad to have you. \n Welcome to TASK-TECH \n We received a request to sign up on TASK-TECH in ${dateString}. \n We are thrilled to have you as a new member of our community.\n The TASK TECH Team`;
 
   try {
     sendEmail({
