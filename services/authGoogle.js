@@ -26,12 +26,11 @@ passport.use(
           accessToken,
           refreshToken,
         });
-        //createSendToken(newuser, 200, res);
+        createSendToken(newuser, 201, request, done); // send token to user
         console.log('user saved successfully to DB');
-        return done(null, profile);
       } else {
-        console.log('user already exist');
-        return done(null, profile);
+        console.log('user already exists');
+        createSendToken(user, 200, request, done); // send token to user
       }
     }
   )
