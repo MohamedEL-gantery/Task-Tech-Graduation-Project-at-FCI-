@@ -13,8 +13,8 @@ const passport = require('passport');
 const session = require('express-session');
 const MemoryStore = require('memorystore')(session);
 
-require('./auth/auth-with-google');
-require('./auth/passportFacebook');
+require('./service/authGoogle');
+require('./service/passportFacebook');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./Controllers/errorController');

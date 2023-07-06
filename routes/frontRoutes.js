@@ -1,5 +1,5 @@
 const express = require('express');
-const authFront = require('../auth/authFornt');
+const authFront = require('../service/authFornt');
 
 const router = express.Router();
 
