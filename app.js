@@ -136,6 +136,12 @@ app.get('/auth/failure', (req, res) => {
   });
 });
 
+app.get('/', (req, res) => {
+  res.send(
+    '<a href="/api/v1/auth/google">Authenticate with Google </a> <br/> <a href="/api/v1/auth/facebook">Authenticate with Facebook </a>'
+  );
+});
+
 // Routes
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/posts', postRouter);
