@@ -184,7 +184,6 @@ app.use('/api/v1/messages', messageRouter);
 app.use('/api/v1/orders', orderRouter);
 app.use('/api/v1/categorys', categoryRouter);
 app.use('/api/v1', frontRouter);
-app.use('/auth', auth);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
