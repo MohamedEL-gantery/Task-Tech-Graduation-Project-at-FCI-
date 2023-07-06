@@ -40,10 +40,9 @@ exports.signup = catchAsync(async (req, res, next) => {
     email: req.body.email,
     password: req.body.password,
     confirmPassword: req.body.confirmPassword,
+    ResetVerified: true,
   });
-  newUser.ResetVerified = true;
 
-  await newUser.save();
   // 2) Send it to email
   const date = new Date();
   const options = { timeZone: 'Africa/Cairo' };
