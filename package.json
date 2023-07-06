@@ -24,7 +24,6 @@
     "fcm-node": "^1.6.1",
     "helmet": "^6.2.0",
     "hpp": "^0.2.3",
-    "inquirer": "^9.2.7",
     "jsonwebtoken": "^9.0.0",
     "memorystore": "^1.6.7",
     "mongoose": "^5.13.16",
