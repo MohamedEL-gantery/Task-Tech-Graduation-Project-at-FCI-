@@ -150,12 +150,12 @@ app.use('/api/v1', frontRouter);
 
 //auth with google
 app.get(
-  '/auth/google',
+  '/api/v1/auth/google',
   passport.authenticate('google', { scope: ['email', 'profile'] })
 );
 
 app.get(
-  '/google/callback',
+  '/api/v1/google/callback',
   passport.authenticate('google', {
     successRedirect: process.env.BASE_URL,
     failureRedirect: '/auth/failure',
@@ -163,10 +163,10 @@ app.get(
 );
 
 //auth with facebook
-app.get('/auth/facebook', passport.authenticate('facebook'));
+app.get('/api/v1/auth/facebook', passport.authenticate('facebook'));
 
 app.get(
-  '/auth/facebook/cb',
+  '/api/v1/auth/facebook/cb',
   passport.authenticate('facebook', {
     successRedirect: process.env.BASE_URL,
     failureRedirect: '/auth/failure',
