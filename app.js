@@ -13,7 +13,7 @@ const passport = require('passport');
 const session = require('express-session');
 const MemoryStore = require('memorystore')(session);
 
-const auth = require('./services/authGoogle');
+require('./services/authGoogle');
 require('./services/passportFacebook');
 
 const AppError = require('./utils/appError');
@@ -132,10 +132,10 @@ passport.deserializeUser(function (obj, done) {
 
 app.get('/', (req, res) => {
   res.send(
-    '<a href="/auth">Authenticate with Google </a> <br/> <a href="/auth/facebook">Authenticate with Facebook </a>'
+    '<a href="/auth/google">Authenticate with Google </a> <br/> <a href="/auth/facebook">Authenticate with Facebook </a>'
   );
 });
-/*
+
 app.get('/auth/failure', (req, res) => {
   res.status(500).json({
     status: 'fail',
@@ -149,6 +149,7 @@ app.get('/protected', (req, res) => {
     message: 'hello from home',
   });
 });
+
 app.get(
   '/auth/google',
   passport.authenticate('google', { scope: ['email', 'profile'] })
@@ -160,7 +161,7 @@ app.get(
     successRedirect: '/protected',
     failureRedirect: '/auth/failure',
   })
-);*/
+);
 
 //auth with facebook
 app.get('/auth/facebook', passport.authenticate('facebook'));

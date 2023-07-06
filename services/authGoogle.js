@@ -1,10 +1,7 @@
-const express = require('express');
 const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth2').Strategy;
 const User = require('../models/userModel');
 const createSendToken = require('../utils/createToken');
-
-const router = express.Router();
 
 passport.use(
   new GoogleStrategy(
@@ -40,18 +37,3 @@ passport.use(
     }
   )
 );
-
-router.get(
-  '/auth/google',
-  passport.authenticate('google', { scope: ['email', 'profile'] })
-);
-
-router.get(
-  '/google/callback',
-  passport.authenticate('google', {
-    successRedirect: '/protected',
-    failureRedirect: '/auth/failure',
-  })
-);
-
-module.exports = router;
