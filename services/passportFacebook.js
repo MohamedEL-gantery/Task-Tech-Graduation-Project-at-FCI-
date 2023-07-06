@@ -23,11 +23,17 @@ passport.use(
           email: process.env.FACEBOOK_EMAIL,
           password: process.env.PASSWORD_FACEBOOK,
           confirmPassword: process.env.PASSWORD_FACEBOOK,
+          accessToken,
+          refreshToken,
         });
-        return done(null, profile);
+
+        // 4) If everything is ok, generate token
+        createSendToken(newuser, 201, request, request.res);
+        console.log('user saved successfully to DB');
       } else {
-        console.log('user already exist in db');
-        return done(null, profile);
+        console.log('user already exists');
+        // 4) If everything is ok, generate token
+        createSendToken(user, 200, request, request.res);
       }
     }
   )
