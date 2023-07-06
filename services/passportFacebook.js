@@ -1,23 +1,24 @@
 const passport = require('passport');
 const FacebookStrategy = require('passport-facebook').Strategy;
 const User = require('../models/userModel');
+const createSendToken = require('../utils/createToken');
 
 passport.use(
   new FacebookStrategy(
     {
       clientID: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
-      callbackURL: '/auth/facebook/cb',
+      callbackURL: process.env.BASE_URL_FACEBOOK,
     },
-    async (accessToken, refreshToken, profile, done) => {
-      console.log(profile);
+    async (request, accessToken, refreshToken, profile, done) => {
+      // 1) find if user exist with this email or not
       const user = await User.findOne({
         facebookId: profile.id,
       });
 
       if (!user) {
-        console.log('adding user to db....');
-        const user = await User.create({
+        // 2) create new user
+        const newUser = await User.create({
           facebookId: profile.id,
           name: profile.displayName,
           email: process.env.FACEBOOK_EMAIL,
@@ -26,27 +27,14 @@ passport.use(
           accessToken,
           refreshToken,
         });
-
-        // 4) If everything is ok, generate token
-        createSendToken(newuser, 201, request, request.res);
+        // 3) If everything is ok, generate token
+        createSendToken(newUser, 201, request, request.res);
         console.log('user saved successfully to DB');
       } else {
         console.log('user already exists');
-        // 4) If everything is ok, generate token
+        // 3) If everything is ok, generate token
         createSendToken(user, 200, request, request.res);
       }
     }
   )
 );
-
-// passport.serializeUser((user, done) => {
-//   console.log('serializeUser');
-//   done(null, user.id);
-// });
-
-// passport.deserializeUser((id, done) => {
-//   console.log('deserializeUser');
-//   User.findById(id).then((user) => {
-//     done(null, user);
-//   });
-// });

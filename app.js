@@ -121,7 +121,6 @@ app.use((req, res, next) => {
   next();
 });
 
-//auth with google
 passport.serializeUser(function (user, done) {
   done(null, user);
 });
@@ -130,48 +129,12 @@ passport.deserializeUser(function (obj, done) {
   done(null, obj);
 });
 
-app.get('/', (req, res) => {
-  res.send(
-    '<a href="/auth/google">Authenticate with Google </a> <br/> <a href="/auth/facebook">Authenticate with Facebook </a>'
-  );
-});
-
 app.get('/auth/failure', (req, res) => {
   res.status(500).json({
     status: 'fail',
     message: 'somthing went wrong',
   });
 });
-
-app.get('/protected', (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    message: 'hello from home',
-  });
-});
-
-app.get(
-  '/auth/google',
-  passport.authenticate('google', { scope: ['email', 'profile'] })
-);
-
-app.get(
-  '/google/callback',
-  passport.authenticate('google', {
-    successRedirect: '/protected',
-    failureRedirect: '/auth/failure',
-  })
-);
-
-//auth with facebook
-app.get('/auth/facebook', passport.authenticate('facebook'));
-app.get(
-  '/auth/facebook/cb',
-  passport.authenticate('facebook', {
-    successRedirect: '/protected',
-    failureRedirect: '/auth/failure',
-  })
-);
 
 // Routes
 app.use('/api/v1/users', userRouter);
@@ -184,6 +147,31 @@ app.use('/api/v1/messages', messageRouter);
 app.use('/api/v1/orders', orderRouter);
 app.use('/api/v1/categorys', categoryRouter);
 app.use('/api/v1', frontRouter);
+
+//auth with google
+app.get(
+  '/auth/google',
+  passport.authenticate('google', { scope: ['email', 'profile'] })
+);
+
+app.get(
+  '/google/callback',
+  passport.authenticate('google', {
+    successRedirect: process.env.BASE_URL,
+    failureRedirect: '/auth/failure',
+  })
+);
+
+//auth with facebook
+app.get('/auth/facebook', passport.authenticate('facebook'));
+
+app.get(
+  '/auth/facebook/cb',
+  passport.authenticate('facebook', {
+    successRedirect: process.env.BASE_URL,
+    failureRedirect: '/auth/failure',
+  })
+);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
