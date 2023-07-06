@@ -161,7 +161,7 @@ app.get(
 );
 
 app.get(
-  '/api/v1/google/callback',
+  '/google/callback',
   passport.authenticate('google', {
     successRedirect: process.env.BASE_URL,
     failureRedirect: '/auth/failure',
@@ -172,7 +172,7 @@ app.get(
 app.get('/api/v1/auth/facebook', passport.authenticate('facebook'));
 
 app.get(
-  '/api/v1/auth/facebook/cb',
+  '/auth/facebook/cb',
   passport.authenticate('facebook', {
     successRedirect: process.env.BASE_URL,
     failureRedirect: '/auth/failure',
