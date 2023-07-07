@@ -13,25 +13,25 @@ const multerOptions = () => {
   const storage = multer.memoryStorage();
 
   // Filter
-  function checkFileType(file, cb) {
-    const filetypes = /pdf/;
-    const mimetype = filetypes.test(file.mimetype);
+  // function checkFileType(file, cb) {
+  //   const filetypes = /pdf/;
+  //   const mimetype = filetypes.test(file.mimetype);
 
-    if (mimetype) {
-      return cb(null, true);
-    } else {
-      cb(new AppError('PDF Only!', 400));
-    }
-  }
+  //   if (mimetype) {
+  //     return cb(null, true);
+  //   } else {
+  //     cb(new AppError('PDF Only!', 400));
+  //   }
+  // }
 
   const maxSize = 5 * 1024 * 1024;
 
   const upload = multer({
     storage,
     limits: { fileSize: maxSize },
-    fileFilter: function (req, file, cb) {
-      checkFileType(file, cb);
-    },
+    // fileFilter: function (req, file, cb) {
+    //   checkFileType(file, cb);
+    // },
   });
 
   return upload;
