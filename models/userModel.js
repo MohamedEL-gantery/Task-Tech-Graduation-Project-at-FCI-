@@ -86,8 +86,9 @@ const userSchema = new mongoose.Schema(
     frequency: {
       type: String,
       enum: {
-        values: ['per hour', 'per day', 'per week', 'per month'],
-        message: 'Frequency is either: per hour, per day, per week, per month',
+        values: ['per hour', 'per day', 'per week', 'per month', 'per task'],
+        message:
+          'Frequency is either: per hour, per day, per week, per month, per task',
       },
     },
     education: {
