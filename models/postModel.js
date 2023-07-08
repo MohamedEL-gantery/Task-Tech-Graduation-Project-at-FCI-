@@ -40,7 +40,7 @@ const postSchema = new mongoose.Schema(
           'Graphics Designer',
         ],
         message:
-          'catogery is either: Web Design, Marketing, Business ,Software Engineering , Web Developer, App Developer ,Product Manager , Accountant,Ui/Ux Design , Graphics Designer',
+          'Category must be one of: Web Design, Marketing, Business, Software Engineering, Web Developer, App Developer, Product Manager, Accountant, Ui/Ux Design, Graphics Designer',
       },
       required: [true, 'task must have catogery'],
     },
@@ -77,7 +77,8 @@ const postSchema = new mongoose.Schema(
             return val >= 130 && val < 150;
           }
         },
-        message: 'the salary of this task have a specific range',
+        message:
+          'the salary of this task must fall within a specific range based on its category',
       },
     },
     saved: {

@@ -12,7 +12,7 @@ cloudinary.config({
 const multerOptions = () => {
   const multerStorage = multer.memoryStorage();
 
-  const multerFilter = (req, file, cb) => {
+  const multerFilter = function (req, file, cb) {
     if (file.mimetype.startsWith('image')) {
       cb(null, true);
     } else {
@@ -20,7 +20,7 @@ const multerOptions = () => {
     }
   };
 
-  const maxSize = 10 * 1024 * 1024;
+  const maxSize = 5 * 1024 * 1024;
 
   const upload = multer({
     storage: multerStorage,

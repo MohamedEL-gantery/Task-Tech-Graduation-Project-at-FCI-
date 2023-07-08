@@ -16,6 +16,7 @@ const categorySchema = new mongoose.Schema(
       type: String,
       enum: ['popular', 'trending'],
       required: [true, 'Type must be one of popular or trending '],
+      default: 'popular',
     },
     nSkills: {
       type: Number,

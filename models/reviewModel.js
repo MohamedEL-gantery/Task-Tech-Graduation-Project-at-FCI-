@@ -61,7 +61,7 @@ reviewSchema.statics.calcAverageRatings = async function (revieweeId) {
   } else {
     await User.findByIdAndUpdate(revieweeId, {
       ratingsQuantity: 0,
-      ratingsAverage: 0,
+      ratingsAverage: 1,
     });
   }
 };

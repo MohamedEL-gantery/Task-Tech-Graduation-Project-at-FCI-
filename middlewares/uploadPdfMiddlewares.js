@@ -1,3 +1,4 @@
+const path = require('path');
 const multer = require('multer');
 const cloudinary = require('cloudinary').v2;
 const AppError = require('../utils/appError');
@@ -23,6 +24,18 @@ const multerOptions = () => {
   //     cb(new AppError('PDF Only!', 400));
   //   }
   // }
+
+  function checkFileType(file, cb) {
+    const filetypes = /pdf/;
+    const extname = path.extname(file.originalname).toLowerCase();
+    const mimetype = filetypes.test(extname);
+
+    if (mimetype) {
+      return cb(null, true);
+    } else {
+      cb(new AppError('PDF Only!', 400));
+    }
+  }
 
   const maxSize = 5 * 1024 * 1024;
 

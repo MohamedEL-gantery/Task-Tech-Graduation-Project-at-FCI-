@@ -46,7 +46,7 @@ const serviceSchema = new mongoose.Schema(
           'Graphics Designer',
         ],
         message:
-          'catogery is either: Web Design, Marketing, Business ,Software Engineering , Web Developer, App Developer ,Product Manager , Accountant,Ui/Ux Design , Graphics Designer',
+          'Category must be one of: Web Design, Marketing, Business, Software Engineering, Web Developer, App Developer, Product Manager, Accountant, Ui/Ux Design, Graphics Designer',
       },
       required: [true, 'Service Must Have category'],
     },

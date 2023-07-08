@@ -17,8 +17,6 @@ router.post('/forgetpassword', authController.forgetPassword);
 router.post('/verifyresetcode', authController.verifyPasswordResetCode);
 router.patch('/resetpassword', authController.resetPassword);
 
-router.get('/topuser', userController.alisTopUser, userController.getAllUser);
-
 // Protect all routes after this middleware
 router.use(authController.protect);
 
@@ -59,6 +57,8 @@ router.get('/me', userController.getMe, userController.getUser);
 router.delete('/deleteMe', userController.deleteMe);
 
 router.get('/alluser', userController.getAllUser);
+
+router.get('/topuser', userController.alisTopUser, userController.getAllUser);
 
 router
   .route('/:id')

@@ -15,6 +15,7 @@ router.get(
 router
   .route('/')
   .get(authController.restrictTo('user', 'admin'), orderConroller.getAllOrder);
+
 router.use(authController.restrictTo('admin'));
 
 router
@@ -22,4 +23,5 @@ router
   .get(orderConroller.getOneOrder)
   .patch(orderConroller.updateOrder)
   .delete(orderConroller.deleteOrder);
+
 module.exports = router;

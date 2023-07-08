@@ -4,10 +4,11 @@ const serviceController = require('../Controllers/serviceController');
 
 const router = express.Router({ mergeParams: true });
 
+router.use(authController.protect);
+
 router
   .route('/')
   .post(
-    authController.protect,
     authController.restrictTo('user'),
     serviceController.uploadFile,
     serviceController.resizeAttachFile,
@@ -19,7 +20,6 @@ router
   .route('/:id')
   .get(serviceController.getService)
   .patch(
-    authController.protect,
     authController.restrictTo('user', 'admin'),
     serviceController.isOwner,
     serviceController.uploadFile,
@@ -27,7 +27,6 @@ router
     serviceController.updateService
   )
   .delete(
-    authController.protect,
     authController.restrictTo('user', 'admin'),
     serviceController.isOwner,
     serviceController.deleteService

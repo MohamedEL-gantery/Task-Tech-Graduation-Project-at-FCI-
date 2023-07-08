@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema(
       required: [true, ' User Must Have A Email'],
       unique: true,
       lowercase: true,
-      validate: [validator.isEmail, 'Please provide a valid email'],
+      validate: [validator.isEmail, 'Please Provide A Valid Email'],
     },
     password: {
       type: String,
@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: {
         values: ['male', 'female'],
-        message: 'Gender is Male , Female',
+        message: 'Gender must be Male or Female',
       },
     },
     age: {
@@ -80,14 +80,14 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: {
         values: ['EUR', 'USD', 'SAR', 'CHF', 'EGP', 'GBP'],
-        message: 'Currency is either:EUR ,USD ,SAR ,CHF ,EGP , GBP',
+        message: 'Currency is either: EUR ,USD ,SAR ,CHF ,EGP , GBP',
       },
     },
-    ferquency: {
+    frequency: {
       type: String,
       enum: {
-        values: ['per hour', 'per day', 'per weak', 'per month'],
-        message: 'Ferquency is Per hour , per day , per weak , per month',
+        values: ['per hour', 'per day', 'per week', 'per month'],
+        message: 'Frequency is either: per hour, per day, per week, per month',
       },
     },
     education: {
@@ -147,7 +147,7 @@ const userSchema = new mongoose.Schema(
           'University of Tokyo',
           'Universite PSL',
         ],
-        message: 'Please Provide Your Education ',
+        message: 'Please Select A Valid Education Option',
       },
     },
     cv: {
@@ -169,7 +169,7 @@ const userSchema = new mongoose.Schema(
           'Graphics Designer',
         ],
         message:
-          'catogery is either: Web Design, Marketing, Business ,Software Engineering , Web Developer, App Developer ,Product Manager , Accountant,Ui/Ux Design , Graphics Designer',
+          'Category must be one of: Web Design, Marketing, Business, Software Engineering, Web Developer, App Developer, Product Manager, Accountant, Ui/Ux Design, Graphics Designer',
       },
     },
     job: {
@@ -183,8 +183,8 @@ const userSchema = new mongoose.Schema(
     },
     ratingsAverage: {
       type: Number,
-      min: [1, 'Rating must be above 1.0'],
-      max: [5, 'Rating must be below 5.0'],
+      min: [1, 'Rating Must Be Above 1.0'],
+      max: [5, 'Rating Must Be Below 5.0'],
       set: (val) => Math.round(val * 10) / 10, // 4.666666, 46.6666, 47, 4.7
       default: 1,
     },
