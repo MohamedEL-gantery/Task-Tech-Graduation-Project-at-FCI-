@@ -321,7 +321,7 @@ exports.relatedPosts = catchAsync(async (req, res, next) => {
   const currentUser = await User.findById(req.params.id);
   //EXCUTE QUERY
   const features = new APIFeatures(
-    Post.find({ category: currentUser.category }),
+    Post.find({ catogery: currentUser.catogery }),
     req.query
   )
     .filter()
