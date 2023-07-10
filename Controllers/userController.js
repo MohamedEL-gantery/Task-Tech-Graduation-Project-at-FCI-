@@ -319,10 +319,9 @@ exports.relatedPosts = catchAsync(async (req, res, next) => {
   if (!req.params.id) req.params.id = req.user.id;
   const documentsCounts = await User.countDocuments();
   const currentUser = await User.findById(req.params.id);
-  // const features = await Post.find({ softwareTool: currentUser.skills });
   //EXCUTE QUERY
   const features = new APIFeatures(
-    Post.find({ category: currentUser.category}),
+    Post.find({ category: currentUser.category }),
     req.query
   )
     .filter()
