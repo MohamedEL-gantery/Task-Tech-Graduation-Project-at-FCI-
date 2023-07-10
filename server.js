@@ -13,35 +13,13 @@ const app = require('./app');
 const http = require('http').createServer(app);
 const io = require('socket.io')(http);
 
-//online and offline users
-let activeUsers = [];
-io.on('connection', (socket) => {
-  //add new user
-  socket.on('new-user-add', (newUserId) => {
-    //if user not add previously
-    if (!activeUsers.some((user) => user.userId === newUserId)) {
-      activeUsers.push({
-        userId: newUserId,
-        socketId: socket.id,
-      });
-    }
-    console.log('Connected Users', activeUsers);
-    io.emit('get-users', activeUsers);
-  });
-  //send message
-  socket.on('send-message', (data) => {
-    const { recieverId } = data;
-    const user = activeUsers.find((user) => user.userId === recieverId);
-    console.log('sending from socket to: ', recieverId);
-    console.log('Data', data);
-    if (user) {
-      io.to(user.socketId).emit('recieve-message', data);
-    }
-  });
-  socket.on('disconnect', () => {
-    activeUsers = activeUsers.filter((user) => user.socketId != socket.id);
-    console.log('User Disconnected', activeUsers);
-    io.emit('get-users', activeUsers);
+io.on('connection', (client) => {
+  console.log('new client connection');
+
+  client.on('msg', (data) => {
+    console.log(data.name);
+
+    client.broadcast.emit('res', data);
   });
 });
 
