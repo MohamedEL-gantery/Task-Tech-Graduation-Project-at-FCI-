@@ -322,7 +322,7 @@ exports.relatedPosts = catchAsync(async (req, res, next) => {
   // const features = await Post.find({ softwareTool: currentUser.skills });
   //EXCUTE QUERY
   const features = new APIFeatures(
-    Post.find({ softwareTool: currentUser.skills }),
+    Post.find({ category: currentUser.category}),
     req.query
   )
     .filter()
