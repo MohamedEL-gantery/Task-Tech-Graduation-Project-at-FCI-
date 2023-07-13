@@ -1,5 +1,4 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const cloudinary = require('cloudinary').v2;
 const Order = require('../models/orderModel');
 const User = require('../models/userModel');
 const Service = require('../models/serviceModel');
