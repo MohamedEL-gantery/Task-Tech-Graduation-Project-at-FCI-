@@ -89,7 +89,7 @@ exports.webhookCheckout = async (req, res, next) => {
 
 exports.getAllOrder = catchAsync(async (req, res, next) => {
   let filter = {};
-  if (req.params.userId) filter = { user: req.user.id };
+  if (req.user.role === 'user') filter = { user: req.user.id };
 
   const documentsCounts = await Order.countDocuments();
 
