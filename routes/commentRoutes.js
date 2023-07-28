@@ -19,4 +19,5 @@ router
   .route('/:id')
   .patch(commentController.isOwner, commentController.updateComment)
   .delete(commentController.isOwner, commentController.deleteComment);
+
 module.exports = router;

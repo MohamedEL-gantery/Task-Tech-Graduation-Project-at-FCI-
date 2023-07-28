@@ -2,16 +2,11 @@ const express = require('express');
 const messageController = require('../Controllers/messageController');
 const authController = require('../Controllers/authController');
 
-const router = express.Router({ mergeParams: true });
+const router = express.Router();
 
-router.use(authController.protect);
-router.use(authController.restrictTo('user', 'admin'));
+router.use(authController.protect, authController.restrictTo('user', 'admin'));
 
-router.post(
-  '/',
-  authController.restrictTo('user'),
-  messageController.addMessage
-);
+router.post('/', messageController.addMessage);
 
 router.get('/:chatId', messageController.getMessages);
 

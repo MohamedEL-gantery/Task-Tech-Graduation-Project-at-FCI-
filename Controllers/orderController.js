@@ -89,7 +89,7 @@ exports.webhookCheckout = async (req, res, next) => {
 
 exports.getAllOrder = catchAsync(async (req, res, next) => {
   let filter = {};
-  if (req.params.userId) filter = { user: req.params.userId };
+  if (req.params.userId) filter = { user: req.user.id };
 
   const documentsCounts = await Order.countDocuments();
 
@@ -112,9 +112,7 @@ exports.getAllOrder = catchAsync(async (req, res, next) => {
 });
 
 exports.getOneOrder = catchAsync(async (req, res, next) => {
-  const order = await Order.findById(req.params.id)
-    .populate('user')
-    .populate('service');
+  const order = await Order.findById(req.params.id);
 
   if (!order) {
     return next(new AppError(`No Order found for id: ${req.params.id}`), 404);

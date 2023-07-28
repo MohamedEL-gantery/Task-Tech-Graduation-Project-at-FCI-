@@ -2,7 +2,7 @@ const express = require('express');
 const orderConroller = require('../Controllers/orderController');
 const authController = require('../Controllers/authController');
 
-const router = express.Router({ mergeParams: true });
+const router = express.Router();
 
 router.use(authController.protect);
 

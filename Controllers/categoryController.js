@@ -77,6 +77,8 @@ exports.updateCategory = catchAsync(async (req, res, next) => {
     return next(new AppError('No Category Found With this  ID'), 404);
   }
 
+  await category.save();
+
   res.status(200).json({
     status: 'success',
     data: {

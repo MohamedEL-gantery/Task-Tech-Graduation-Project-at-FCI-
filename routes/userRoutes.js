@@ -4,7 +4,6 @@ const userController = require('../Controllers/userController');
 const reviewRouter = require('./reviewRoutes');
 const serviceRouter = require('./serviceRoutes');
 const postRouter = require('./postRoutes');
-const orderRouter = require('./orderRoutes');
 
 const router = express.Router();
 
@@ -66,17 +65,14 @@ router
   .patch(authController.restrictTo('admin'), userController.updateUser)
   .delete(authController.restrictTo('admin'), userController.deleteUser);
 
-//follow user route
 router
   .route('/:id/follow')
   .put(authController.restrictTo('user'), userController.followUser);
 
-//unfollow user route
 router
   .route('/:id/unfollow')
   .put(authController.restrictTo('user'), userController.unFollowUser);
 
-//timeline posts
 router.route('/:id/timeline').get(userController.timeline);
 
 // POST /revieweeId/234fd55/reviews
@@ -94,10 +90,8 @@ router.use('/:userId/service', serviceRouter);
 // GET /userId/234fd55/post/9487fd55
 router.use('/:userId/post', postRouter);
 
-// GET /userId/234fd55/order
-router.use('/:userId/order', orderRouter);
-
 router.route('/:search/search-user').get(userController.searchUser);
+
 router
   .route('/:id/relatedPosts')
   .get(authController.restrictTo('user', 'admin'), userController.relatedPosts);
