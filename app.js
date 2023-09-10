@@ -1,4 +1,3 @@
-const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
@@ -19,15 +18,15 @@ require('./Auth/passportFacebook');
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./Controllers/errorController');
 const userRouter = require('./routes/userRoutes');
+const frontRouter = require('./routes/frontRoutes');
 const categoryRouter = require('./routes/categoryRoutes');
 const postRouter = require('./routes/postRoutes');
-const reviewRouter = require('./routes/reviewRoutes');
-const serviceRouter = require('./routes/serviceRoutes');
 const commentRouter = require('./routes/commentRoutes');
+const serviceRouter = require('./routes/serviceRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
 const chatRouter = require('./routes/chatRoutes');
 const messageRouter = require('./routes/messageRoutes');
 const orderRouter = require('./routes/orderRoutes');
-const frontRouter = require('./routes/frontRoutes');
 const { webhookCheckout } = require('./Controllers/orderController');
 
 // Start app
@@ -38,13 +37,6 @@ app.enable('trust proxy');
 // Enable other domains to access your application
 app.use(cors());
 app.options('*', cors());
-
-// Serving static files
-app.use(express.static(path.join(__dirname, 'public')));
-
-/*app.use(
-  session({ resave: false, saveUninitialized: true, secret: 'Task-Tech App' })
-  );*/
 
 //session
 app.use(
@@ -84,9 +76,10 @@ app.post(
   '/webhook-checkout',
   express.raw({ type: 'application/json' }),
   webhookCheckout
-),
-  // Body parser, reading data from body into req.body
-  app.use(express.json({ limit: '10kb' }));
+);
+
+// Body parser, reading data from body into req.body
+app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 app.use(cookieParser());
 
@@ -115,12 +108,6 @@ app.use(
 
 app.use(compression());
 
-// test middleware
-app.use((req, res, next) => {
-  req.requestTime = new Date().toISOString();
-  next();
-});
-
 passport.serializeUser(function (user, done) {
   done(null, user);
 });
@@ -142,17 +129,23 @@ app.get('/', (req, res) => {
   );
 });
 
+// test middleware
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString();
+  next();
+});
+
 // Routes
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1', frontRouter);
+app.use('/api/v1/categorys', categoryRouter);
 app.use('/api/v1/posts', postRouter);
-app.use('/api/v1/reviews', reviewRouter);
-app.use('/api/v1/services', serviceRouter);
 app.use('/api/v1/comments', commentRouter);
+app.use('/api/v1/services', serviceRouter);
+app.use('/api/v1/reviews', reviewRouter);
 app.use('/api/v1/chats', chatRouter);
 app.use('/api/v1/messages', messageRouter);
 app.use('/api/v1/orders', orderRouter);
-app.use('/api/v1/categorys', categoryRouter);
-app.use('/api/v1', frontRouter);
 
 //auth with google
 app.get(

@@ -1,8 +1,8 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const Order = require('../models/orderModel');
 const User = require('../models/userModel');
 const Service = require('../models/serviceModel');
-const catchAsync = require('../utils/catchAync');
+const Order = require('../models/orderModel');
+const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/apiFeatures');
 
@@ -20,6 +20,8 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
 
   const totalServicePrice = servicePrice + taxSalary;
 
+  const unitAmount = Math.round(totalServicePrice * 100);
+
   // 3) create stripe checkout session
   const session = await stripe.checkout.sessions.create({
     line_items: [
@@ -27,7 +29,7 @@ exports.CheckoutSession = catchAsync(async (req, res, next) => {
         quantity: 1,
         price_data: {
           currency: 'egp',
-          unit_amount: totalServicePrice * 100,
+          unit_amount: unitAmount,
           product_data: {
             name: service.name,
             description: service.description,

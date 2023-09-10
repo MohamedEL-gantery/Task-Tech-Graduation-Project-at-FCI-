@@ -1,10 +1,7 @@
-const { promisify } = require('util');
-const jwt = require('jsonwebtoken');
-const User = require('../models/userModel');
 const Post = require('../models/postModel');
-const APIFeatures = require('../utils/apiFeatures');
-const catchAsync = require('../utils/catchAync');
+const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
+const APIFeatures = require('../utils/apiFeatures');
 const uploadImageMiddleware = require('../middlewares/uploadImageMiddleware');
 
 exports.uploadFile = uploadImageMiddleware.uploadSingleImage('attachFile');
@@ -24,7 +21,6 @@ exports.resizeAttachFile = catchAsync(async (req, res, next) => {
 exports.createPost = catchAsync(async (req, res, next) => {
   //Allow nested routes
   if (!req.body.user) req.body.user = req.params.userId;
-  if (!req.body.user) req.body.user = req.user.id;
 
   const newPost = await Post.create(req.body);
   res.status(201).json({
@@ -77,47 +73,6 @@ exports.getPost = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.isOwner = catchAsync(async (req, res, next) => {
-  // 1) Getting token and check of it's there
-  let token;
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    token = req.headers.authorization.split(' ')[1];
-  } else if (req.cookies.jwt) {
-    token = req.cookies.jwt;
-  }
-
-  if (!token) {
-    return next(
-      new AppError('You are not logged in! Please log in to get access.', 401)
-    );
-  }
-  // 2) Verification token
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
-  // 3) Check if user still exists
-  const currentUser = await User.findById(decoded.id);
-  if (!currentUser) {
-    return next(
-      new AppError('The user belonging to this token does no longer exist', 401)
-    );
-  }
-
-  // 4) Check if user changed password after the token was issued
-  if (currentUser.changedPassword(decoded.iat)) {
-    return next(
-      new AppError('User recently changed password! Please log in again', 401)
-    );
-  }
-
-  // GRANT ACCESS TO PROTECTED ROUTE
-  req.user = currentUser;
-  res.locals.user = currentUser;
-  next();
-});
-
 exports.updatePost = catchAsync(async (req, res, next) => {
   let post;
   post = await Post.findById(req.params.id);
@@ -134,7 +89,6 @@ exports.updatePost = catchAsync(async (req, res, next) => {
       )
     );
   }
-  7;
 
   await Post.findByIdAndUpdate(req.params.id, req.body, {
     new: true, //to return new document
@@ -165,6 +119,7 @@ exports.deletePost = catchAsync(async (req, res, next) => {
       )
     );
   }
+
   await Post.findByIdAndDelete(req.params.id);
 
   res.status(204).json({
@@ -176,6 +131,7 @@ exports.deletePost = catchAsync(async (req, res, next) => {
 //saved / unsaved  post
 exports.savePost = catchAsync(async (req, res, next) => {
   const post = await Post.findById(req.params.id);
+
   if (!post.saved.includes(req.user.id)) {
     await post.updateOne({ $push: { saved: req.user.id } });
     res.status(200).json({

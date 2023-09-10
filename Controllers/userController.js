@@ -1,6 +1,6 @@
 const User = require('../models/userModel');
 const Post = require('../models/postModel');
-const catchAsync = require('../utils/catchAync');
+const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/apiFeatures');
 const uploadImageMiddleware = require('../middlewares/uploadImageMiddleware');
@@ -23,8 +23,9 @@ exports.uploadUserPortfolio = uploadImageMiddleware.uploadMixOfImages([
 ]);
 
 exports.resizePortfolioImages = catchAsync(async (req, res, next) => {
-  if (!req.files.images) return next();
-
+  if (!req.files || !req.files.images) {
+    return next();
+  }
   req.body.images = [];
 
   await Promise.all(

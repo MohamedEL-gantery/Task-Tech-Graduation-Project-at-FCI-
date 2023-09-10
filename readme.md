@@ -11,20 +11,21 @@ To use this project, follow the instructions below:
 
 In the project directory, you can run:
 
-- `npm start` or `npm run start:dev` to run the app in development mode
+- `npm start` or `npm run start:dev` to run the app in development mode.
+- `npm start` or `npm run start:prod` to run the app in production mode.
 - The app will be available at <[https://task-teck.onrender.com/ ↗](https://task-teck.onrender.com/)>
 
 ## Introduction
 
 The Task-Tech system aims to help fresh graduates find job opportunities to develop themselves while helping business owners save time, effort, and money by getting services at the best price.
 
-## Tech Stack
+## Technologies Used
 
 The Task-Tech system is built using modern technologies to provide a great performance improvement for developers who want to create custom applications using different technologies. The following technologies are used:
 
-- Node.js
-- Express
-- MongoDB
+- **Back-end**: Node.js, Express.js
+- **Database**: MongoDB
+- **Payment Integration**: [Stripe]
 
 ## List of Technologies Used
 
@@ -68,3 +69,9 @@ The following development tools were used in this project:
 - VSCode: A lightweight and powerful code editor, which provides a great development experience with features like IntelliSense, debugging, and Git integration.
 
 - Postman: A popular API testing tool that allows you to test and debug your API endpoints easily.
+
+- These tools greatly enhance the development experience and facilitate efficient coding, testing, and debugging processes.
+
+- Please note that the recommended Node.js version for this project is 18.16.1.
+
+Thank you for using Task-Tech! Happy trading!

@@ -1,20 +1,17 @@
 const express = require('express');
-const orderConroller = require('../Controllers/orderController');
 const authController = require('../Controllers/authController');
+const orderConroller = require('../Controllers/orderController');
 
 const router = express.Router();
 
+// Protect all routes after this middleware
 router.use(authController.protect);
 
-router.get(
-  '/checkout-session/:serviceId',
-  authController.restrictTo('user'),
-  orderConroller.CheckoutSession
-);
-
 router
-  .route('/')
-  .get(authController.restrictTo('user', 'admin'), orderConroller.getAllOrder);
+  .route('/checkout-session/:serviceId')
+  .get(authController.restrictTo('user'), orderConroller.CheckoutSession);
+
+router.route('/').get(orderConroller.getAllOrder);
 
 router.use(authController.restrictTo('admin'));
 

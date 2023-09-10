@@ -1,5 +1,5 @@
 const Category = require('../models/categoryModel');
-const catchAsync = require('../utils/catchAync');
+const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/apiFeatures');
 const uploadImageMiddleware = require('../middlewares/uploadImageMiddleware');
@@ -76,8 +76,6 @@ exports.updateCategory = catchAsync(async (req, res, next) => {
   if (!category) {
     return next(new AppError('No Category Found With this  ID'), 404);
   }
-
-  await category.save();
 
   res.status(200).json({
     status: 'success',

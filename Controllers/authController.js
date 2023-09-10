@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
-const catchAsync = require('../utils/catchAync');
+const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const sendEmail = require('../utils/email');
 
@@ -79,7 +79,6 @@ exports.signup = catchAsync(async (req, res, next) => {
       500
     );
   }
-  req.user = newUser;
 });
 
 exports.verfiySignup = catchAsync(async (req, res, next) => {
@@ -88,35 +87,38 @@ exports.verfiySignup = catchAsync(async (req, res, next) => {
     .createHash('sha256')
     .update(req.body.resetCode)
     .digest('hex');
-
-  let currentToken;
-
+  // 2) Getting token and check of it's there
+  let token;
   if (
     req.headers.authorization &&
     req.headers.authorization.startsWith('Bearer')
   ) {
-    currentToken = req.headers.authorization.split(' ')[1];
+    token = req.headers.authorization.split(' ')[1];
   } else if (req.cookies.jwt) {
-    currentToken = req.cookies.jwt;
+    token = req.cookies.jwt;
   }
 
-  // 2) Verification token
-  const decoded = await promisify(jwt.verify)(
-    currentToken,
-    process.env.JWT_SECRET
-  );
+  if (!token) {
+    return next(
+      new AppError('You are not sign up! Please sign up to get access.', 401)
+    );
+  }
 
-  // 3) Check if user still exists
+  // 3) Verification token
+  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+  // 4) Check if user still exists
   let user = await User.findById(decoded.id);
   if (!user) {
     return next(
       new AppError(
-        'The token belonging to this user does not longer exist.',
+        'The user belonging to this token does no longer exist.',
         401
       )
     );
   }
 
+  // 4) Check if the reset code is valid and not expired
   user = await User.findOne({
     ResetCode: hashedResetCode,
     ResetExpires: { $gt: Date.now() },
@@ -124,15 +126,15 @@ exports.verfiySignup = catchAsync(async (req, res, next) => {
 
   if (!user) {
     await User.findByIdAndDelete(decoded.id);
-    return next(new AppError('Reset code invalid or expired'));
+    return next(new AppError('Reset code is invalid or expired'));
   }
-  // 4) Reset code valid
+  // 5) Reset code valid
   user.ResetCode = undefined;
   user.ResetExpires = undefined;
   user.ResetVerified = true;
 
   await user.save({ validateBeforeSave: false });
-  // 5) If everything is ok, generate token
+  // 6) If everything is ok, generate token
   createSendToken(user, 201, req, res);
 });
 

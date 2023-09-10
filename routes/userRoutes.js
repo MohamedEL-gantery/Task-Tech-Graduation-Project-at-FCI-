@@ -1,67 +1,90 @@
 const express = require('express');
 const authController = require('../Controllers/authController');
 const userController = require('../Controllers/userController');
-const reviewRouter = require('./reviewRoutes');
-const serviceRouter = require('./serviceRoutes');
 const postRouter = require('./postRoutes');
+const serviceRouter = require('./serviceRoutes');
+const reviewRouter = require('./reviewRoutes');
 
 const router = express.Router();
 
-router.post('/signup', authController.signup);
-router.post('/verfiysignup', authController.verfiySignup);
-router.post('/login', authController.login);
-router.get('/logout', authController.logout);
+router.route('/signup').post(authController.signup);
 
-router.post('/forgetpassword', authController.forgetPassword);
-router.post('/verifyresetcode', authController.verifyPasswordResetCode);
-router.patch('/resetpassword', authController.resetPassword);
+router.route('/verfiysignup').post(authController.verfiySignup);
+
+router.route('/login').post(authController.login);
+
+router.route('/logout').get(authController.logout);
+
+router.route('/forgetpassword').post(authController.forgetPassword);
+
+router.route('/verifyresetcode').post(authController.verifyPasswordResetCode);
+
+router.route('/resetpassword').patch(authController.resetPassword);
 
 // Protect all routes after this middleware
 router.use(authController.protect);
 
-router.patch('/updatemypassword', authController.updatePassword);
+// POST /revieweeId/234fd55/reviews
+// GET /revieweeId/234fd55/reviews
+router.use('/:revieweeId/reviews', reviewRouter);
 
-router.patch(
-  '/createprofile/uploadphoto/me',
-  authController.restrictTo('user'),
-  userController.uploadUserPhoto,
-  userController.resizeUserPhoto,
-  userController.userPhoto
-);
+// POST /userId/234fd55/service
+// GET /userId/234fd55/service
+router.use('/:userId/service', serviceRouter);
 
-router.patch(
-  '/createprofile/me',
-  authController.restrictTo('user'),
-  userController.getMe,
-  userController.updateUser
-);
+// POST /userId/234fd55/post
+// GET /userId/234fd55/post
+router.use('/:userId/post', postRouter);
 
-router.patch(
-  '/createprofile/portfolio/me',
-  authController.restrictTo('user'),
-  userController.uploadUserPortfolio,
-  userController.resizePortfolioImages,
-  userController.UserPortfolio
-);
+router.route('/updatemypassword').patch(authController.updatePassword);
 
-router.patch(
-  '/createprofile/uploadcv/me',
-  authController.restrictTo('user'),
-  userController.uploadUserFile,
-  userController.uploadUserCV
-);
+router
+  .route('/createprofile/uploadphoto/me')
+  .patch(
+    authController.restrictTo('user'),
+    userController.uploadUserPhoto,
+    userController.resizeUserPhoto,
+    userController.userPhoto
+  );
 
-router.get('/me', userController.getMe, userController.getUser);
+router
+  .route('/createprofile/me')
+  .patch(
+    authController.restrictTo('user'),
+    userController.getMe,
+    userController.updateUser
+  );
 
-router.delete('/deleteMe', userController.deleteMe);
+router
+  .route('/createprofile/portfolio/me')
+  .patch(
+    authController.restrictTo('user'),
+    userController.uploadUserPortfolio,
+    userController.resizePortfolioImages,
+    userController.UserPortfolio
+  );
 
-router.get('/alluser', userController.getAllUser);
+router
+  .route('/createprofile/uploadcv/me')
+  .patch(
+    authController.restrictTo('user'),
+    userController.uploadUserFile,
+    userController.uploadUserCV
+  );
 
-router.get('/topuser', userController.alisTopUser, userController.getAllUser);
+router.route('/me').get(userController.getMe, userController.getUser);
+
+router.route('/deleteMe').delete(userController.deleteMe);
+
+router.route('/alluser').get(userController.getAllUser);
+
+router
+  .route('/topuser')
+  .get(userController.alisTopUser, userController.getAllUser);
 
 router
   .route('/:id')
-  .get(authController.restrictTo('admin', 'user'), userController.getUser)
+  .get(userController.getUser)
   .patch(authController.restrictTo('admin'), userController.updateUser)
   .delete(authController.restrictTo('admin'), userController.deleteUser);
 
@@ -75,25 +98,8 @@ router
 
 router.route('/:id/timeline').get(userController.timeline);
 
-// POST /revieweeId/234fd55/reviews
-// GET /revieweeId/234fd55/reviews
-// GET /revieweeId/234fd55/reviews/9487fd55
-router.use('/:revieweeId/reviews', reviewRouter);
-
-// POST /userId/234fd55/service
-// GET /userId/234fd55/service
-// GET /userId/234fd55/service/9487fd55
-router.use('/:userId/service', serviceRouter);
-
-// POST /userId/234fd55/post
-// GET /userId/234fd55/post
-// GET /userId/234fd55/post/9487fd55
-router.use('/:userId/post', postRouter);
-
 router.route('/:search/search-user').get(userController.searchUser);
 
-router
-  .route('/:id/relatedPosts')
-  .get(authController.restrictTo('user', 'admin'), userController.relatedPosts);
+router.route('/:id/relatedPosts').get(userController.relatedPosts);
 
 module.exports = router;

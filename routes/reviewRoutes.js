@@ -4,6 +4,7 @@ const reviewController = require('../Controllers/reviewController');
 
 const router = express.Router({ mergeParams: true });
 
+// Protect all routes after this middleware
 router.use(authController.protect);
 
 router
@@ -14,14 +15,9 @@ router
 router
   .route('/:id')
   .get(reviewController.getReview)
-  .patch(
-    authController.restrictTo('user', 'admin'),
-    reviewController.isOwner,
-    reviewController.updateReview
-  )
+  .patch(authController.restrictTo('user'), reviewController.updateReview)
   .delete(
     authController.restrictTo('user', 'admin'),
-    reviewController.isOwner,
     reviewController.deleteReview
   );
 

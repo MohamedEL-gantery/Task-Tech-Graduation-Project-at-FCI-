@@ -41,41 +41,29 @@ const userSchema = new mongoose.Schema(
         message: 'Gender must be Male or Female',
       },
     },
-    age: {
-      type: Number,
-    },
+    age: Number,
     birthDate: {
       type: Date,
       validate: [validator.isDate, 'Please Provide A Valid BirthDate'],
     },
-    location: {
-      type: String,
-    },
+    location: String,
     phoneNumber: {
       type: String,
       validate: [validator.isMobilePhone, 'Please Provide A Vaild Phone'],
     },
-    skills: {
-      type: [String],
-    },
+    skills: [String],
     photo: {
       type: String,
       default: 'default.jpg',
     },
-    images: {
-      type: [String],
-    },
+    images: [String],
     about: {
       type: String,
       minLenght: 100,
       trim: true,
     },
-    minimum: {
-      type: Number,
-    },
-    maximum: {
-      type: Number,
-    },
+    minimum: Number,
+    maximum: Number,
     currency: {
       type: String,
       enum: {
@@ -151,9 +139,7 @@ const userSchema = new mongoose.Schema(
         message: 'Please Select A Valid Education Option',
       },
     },
-    cv: {
-      type: String,
-    },
+    cv: String,
     catogery: {
       type: String,
       enum: {
@@ -186,7 +172,7 @@ const userSchema = new mongoose.Schema(
       type: Number,
       min: [1, 'Rating Must Be Above 1.0'],
       max: [5, 'Rating Must Be Below 5.0'],
-      set: (val) => Math.round(val * 10) / 10, // 4.666666, 46.6666, 47, 4.7
+      set: (val) => Math.round(val * 10) / 10,
       default: 1,
     },
     ratingsQuantity: {

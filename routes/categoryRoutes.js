@@ -4,6 +4,7 @@ const categoryController = require('../Controllers/categoryController');
 
 const router = express.Router();
 
+// Protect all routes after this middleware
 router.use(authController.protect);
 
 router
@@ -14,17 +15,11 @@ router
     categoryController.resizeCategoryPhoto,
     categoryController.createCategory
   )
-  .get(
-    authController.restrictTo('admin', 'user'),
-    categoryController.getallCategory
-  );
+  .get(categoryController.getallCategory);
 
 router
   .route('/:id')
-  .get(
-    authController.restrictTo('admin', 'user'),
-    categoryController.getOneCategory
-  )
+  .get(categoryController.getOneCategory)
   .patch(
     authController.restrictTo('admin'),
     categoryController.uploadCategoryPhoto,

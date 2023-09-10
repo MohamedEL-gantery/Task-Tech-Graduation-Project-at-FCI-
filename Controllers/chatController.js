@@ -1,5 +1,5 @@
 const Chat = require('../models/chatModel');
-const catchAsync = require('../utils/catchAync');
+const catchAsync = require('../utils/catchAsync');
 
 exports.createChat = catchAsync(async (req, res, next) => {
   const newChat = await Chat.create({

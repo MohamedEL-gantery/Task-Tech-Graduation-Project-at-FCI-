@@ -4,6 +4,7 @@ const serviceController = require('../Controllers/serviceController');
 
 const router = express.Router({ mergeParams: true });
 
+// Protect all routes after this middleware
 router.use(authController.protect);
 
 router
@@ -20,15 +21,13 @@ router
   .route('/:id')
   .get(serviceController.getService)
   .patch(
-    authController.restrictTo('user', 'admin'),
-    serviceController.isOwner,
+    authController.restrictTo('user'),
     serviceController.uploadFile,
     serviceController.resizeAttachFile,
     serviceController.updateService
   )
   .delete(
     authController.restrictTo('user', 'admin'),
-    serviceController.isOwner,
     serviceController.deleteService
   );
 

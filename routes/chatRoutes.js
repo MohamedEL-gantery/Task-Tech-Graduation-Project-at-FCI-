@@ -1,9 +1,10 @@
 const express = require('express');
-const chatController = require('../Controllers/chatController');
 const authController = require('../Controllers/authController');
+const chatController = require('../Controllers/chatController');
 
 const router = express.Router();
 
+// Protect all routes after this middleware
 router.use(authController.protect, authController.restrictTo('user', 'admin'));
 
 router.route('/').post(chatController.createChat);

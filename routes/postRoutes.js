@@ -1,15 +1,15 @@
 const express = require('express');
-const postController = require('../Controllers/postController');
 const authController = require('../Controllers/authController');
+const postController = require('../Controllers/postController');
 const commentRouter = require('../routes/commentRoutes');
 
 const router = express.Router({ mergeParams: true });
 
+// Protect all routes after this middleware
 router.use(authController.protect);
 
 //POST /post/234fad5/comments
 //GET /post/234fad5/comments
-//GET /post/234fad5/comments/123fds5
 router.use('/:postId/comments', commentRouter);
 
 router
@@ -22,20 +22,17 @@ router
   )
   .get(postController.getAllPosts);
 
-router.get('/:id', postController.getPost);
-
 router
   .route('/:id')
+  .get(postController.getPost)
   .patch(
-    authController.restrictTo('user', 'admin'),
-    postController.isOwner,
+    authController.restrictTo('user'),
     postController.uploadFile,
     postController.resizeAttachFile,
     postController.updatePost
   )
   .delete(
     authController.restrictTo('user', 'admin'),
-    postController.isOwner,
     postController.deletePost
   );
 

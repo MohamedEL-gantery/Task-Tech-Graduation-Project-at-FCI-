@@ -12,20 +12,26 @@ cloudinary.config({
 const multerOptions = () => {
   const multerStorage = multer.memoryStorage();
 
-  const multerFilter = function (req, file, cb) {
-    if (file.mimetype.startsWith('image')) {
+  const multerFilter = (req, file, cb) => {
+    if (
+      file.mimetype === 'image/png' ||
+      file.mimetype === 'image/jpg' ||
+      file.mimetype === 'image/jpeg'
+    ) {
       cb(null, true);
     } else {
-      cb(new AppError('Not an image! Please upload only images', 400), false);
+      cb(
+        new AppError('Please upload only images with png , jpg , jepg ', 400),
+        false
+      );
     }
   };
-
   const maxSize = 5 * 1024 * 1024;
 
   const upload = multer({
     storage: multerStorage,
     limits: { fileSize: maxSize },
-    //fileFilter: multerFilter,
+    fileFilter: multerFilter,
   });
 
   return upload;
@@ -82,11 +88,19 @@ exports.uploadMixOfImages = (arrayOfFields) => {
         next(error);
       } else {
         try {
+          const files = req.files || {}; // Check if req.files is defined, default to empty object if undefined
           const promises = arrayOfFields.map((field) => {
-            return uploadToCloudinary(req.files[field.name][0]);
+            const fieldFiles = files[field.name] || [];
+            if (fieldFiles.length === 0) {
+              return null; // Skip this field if no files are present
+            }
+            return uploadToCloudinary(fieldFiles[0]);
           });
+
           const results = await Promise.all(promises);
-          req.fileUrls = results.map((result) => result.secure_url);
+          req.fileUrls = results
+            .filter((result) => result !== null)
+            .map((result) => result.secure_url);
           next();
         } catch (error) {
           next(error);

@@ -16,14 +16,12 @@ const orderSchema = new mongoose.Schema(
       type: Number,
       require: [true, 'order must have a salary'],
     },
-    taxSalary: {
-      type: Number,
-    },
+    taxSalary: Number,
     isPaid: {
       type: Boolean,
       default: false,
     },
-    paidAt: { type: Date },
+    paidAt: Date,
   },
   { timestamps: true }
 );
