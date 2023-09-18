@@ -56,7 +56,6 @@ The following is a list of the technologies used in this project:
 - passport-facebook: A passport strategy for authenticating with Facebook.
 - passport-google-oauth: A passport strategy for authenticating with Google.
 - passport-google-oauth2: A passport strategy for authenticating with Google using OAuth 2.0.
-- slugify: A library for converting strings into URL-friendly slugs.
 - socket.io: A real-time bidirectional communication library for web applications.
 - stripe: A library for processing online payments.
 - validator: A library for data validation and sanitization.
