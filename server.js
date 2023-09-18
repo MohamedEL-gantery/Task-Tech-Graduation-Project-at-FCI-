@@ -38,6 +38,15 @@ io.on('connection', (socket) => {
       io.to(user.socketId).emit('recieve-message', data);
     }
   });
+
+  socket.on('typing', () => {
+    socket.broadcast.emit('show-typing-status');
+  });
+
+  socket.on('stop-typing', () => {
+    socket.broadcast.emit('clear-typing-status');
+  });
+
   socket.on('disconnect', () => {
     activeUsers = activeUsers.filter((user) => user.socketId != socket.id);
     console.log('User Disconnected', activeUsers);
