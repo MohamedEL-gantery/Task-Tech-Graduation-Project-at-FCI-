@@ -81,7 +81,7 @@ exports.signup = catchAsync(async (req, res, next) => {
   }
 });
 
-exports.verfiySignup = catchAsync(async (req, res, next) => {
+exports.verifySignup = catchAsync(async (req, res, next) => {
   // 1) Get user based on reset code
   const hashedResetCode = crypto
     .createHash('sha256')
