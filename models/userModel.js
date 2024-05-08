@@ -19,13 +19,13 @@ const userSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: [true, ' Please Provide A Vaild Password'],
-      minLenght: 8,
+      required: [true, ' Please Provide A Valid Password'],
+      minLength: 8,
       select: false,
     },
     confirmPassword: {
       type: String,
-      required: [true, 'Please Provide A Vaild Confirm Password'],
+      required: [true, 'Please Provide A Valid Confirm Password'],
       // This only works on create and SAVE !!!
       validate: {
         validator: function (el) {
@@ -49,7 +49,7 @@ const userSchema = new mongoose.Schema(
     location: String,
     phoneNumber: {
       type: String,
-      validate: [validator.isMobilePhone, 'Please Provide A Vaild Phone'],
+      validate: [validator.isMobilePhone, 'Please Provide A Valid Phone'],
     },
     skills: [String],
     photo: {
@@ -59,7 +59,7 @@ const userSchema = new mongoose.Schema(
     images: [String],
     about: {
       type: String,
-      minLenght: 100,
+      minLength: 100,
       trim: true,
     },
     minimum: Number,
@@ -184,24 +184,23 @@ const userSchema = new mongoose.Schema(
       default: true,
       select: false,
     },
-    followers: {
-      type: Array,
-      default: [],
-    },
-    followings: {
-      type: Array,
-      default: [],
-    },
+    followers: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
+    followings: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
     facebookId: String,
     googleId: String,
     isOnline: {
       type: Boolean,
       default: true,
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-      select: false,
     },
     passwordChangedAt: Date,
     passwordResetExpires: Date,
@@ -212,6 +211,7 @@ const userSchema = new mongoose.Schema(
     ResetVerified: Boolean,
   },
   {
+    timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   }

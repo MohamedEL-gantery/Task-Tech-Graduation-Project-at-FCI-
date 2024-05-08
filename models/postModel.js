@@ -81,10 +81,12 @@ const postSchema = new mongoose.Schema(
           'the salary of this task must fall within a specific range based on its category',
       },
     },
-    saved: {
-      type: Array,
-      default: [],
-    },
+    saved: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User',
+      },
+    ],
     user: {
       type: mongoose.Schema.ObjectId,
       ref: 'User',

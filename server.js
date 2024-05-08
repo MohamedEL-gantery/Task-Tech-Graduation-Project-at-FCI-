@@ -11,7 +11,12 @@ process.on('uncaughtException', (err) => {
 dotenv.config({ path: './config.env' });
 const app = require('./app');
 const http = require('http').createServer(app);
-const io = require('socket.io')(http);
+const io = require('socket.io')(http, {
+  cors: {
+    origin: '*',
+    allowedHeaders: ['my-custom-header'],
+  },
+});
 
 //online and offline users
 let activeUsers = [];
@@ -36,6 +41,11 @@ io.on('connection', (socket) => {
     console.log('Data', data);
     if (user) {
       io.to(user.socketId).emit('recieve-message', data);
+      io.to(user.socketId).emit('getNotification', {
+        senderId: message.senderId,
+        isRead: false,
+        date: new Date(),
+      });
     }
   });
 

@@ -2,8 +2,21 @@ const Chat = require('../models/chatModel');
 const catchAsync = require('../utils/catchAsync');
 
 exports.createChat = catchAsync(async (req, res, next) => {
+  if (!req.body.senderId) req.body.senderId = req.user.id;
+
+  const existChat = await Chat.findOne({
+    members: { $all: [req.body.senderId, req.body.recieverId] },
+  });
+
+  if (existChat) {
+    return res.status(200).json({
+      status: 'success',
+      data: existChat,
+    });
+  }
+
   const newChat = await Chat.create({
-    members: [req.body.senderId, req.body.recieverId],
+    members: [senderId, receivedId],
   });
 
   res.status(201).json({
@@ -15,9 +28,11 @@ exports.createChat = catchAsync(async (req, res, next) => {
 });
 
 exports.userChats = catchAsync(async (req, res, next) => {
+  const userId = req.user.id;
+
   const chat = await Chat.find({
-    members: { $in: [req.params.userId] },
-  });
+    members: { $in: [userId] },
+  }).sort({ updatedAt: -1 });
 
   res.status(200).json({
     status: 'success',
@@ -29,7 +44,7 @@ exports.userChats = catchAsync(async (req, res, next) => {
 
 exports.findChat = catchAsync(async (req, res, next) => {
   const chat = await Chat.findOne({
-    members: { $all: [req.params.firstId, req.params.secondId] },
+    members: [req.params.firstId, req.params.secondId],
   });
 
   res.status(200).json({

@@ -14,15 +14,6 @@ const signToken = (id) => {
 
 const createSendToken = (user, statusCode, req, res) => {
   const token = signToken(user._id);
-
-  res.cookie('jwt', token, {
-    expires: new Date(
-      Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-    ),
-    httpOnly: true,
-    secure: req.secure || req.headers['x-forwarded-proto'] === 'https',
-  });
-
   // Remove password from output
   user.password = undefined;
 
@@ -36,13 +27,21 @@ const createSendToken = (user, statusCode, req, res) => {
 };
 
 exports.signup = catchAsync(async (req, res, next) => {
-  // 1) Create new account
-  let newUser = await User.create({
+  const value = {
     name: req.body.name,
     email: req.body.email,
     password: req.body.password,
     confirmPassword: req.body.confirmPassword,
-  });
+  };
+
+  const existUser = await User.findOne({ email: value.email });
+
+  if (existUser) {
+    return next(new AppError('Email Already Exists', 400));
+  }
+
+  // 1) Create new account
+  let newUser = await User.create(value);
 
   // 2) Generate hash reset random 4 digits and save it in db
   const resetCode = newUser.generateVerificationCode();
@@ -51,8 +50,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 
   // 3) Send it to newUser's email
   const date = new Date();
-  const options = { timeZone: 'Africa/Cairo' };
-  const dateString = date.toLocaleString('en-US', options);
+  const dateString = date.toLocaleTimeString('en-EG');
 
   const message = `Hello ${newUser.name},\n Glad to have you. \n We received a request to sign up on TASK-TECH in ${dateString}. \n ${resetCode} \n Please confirm this code to complete the sign up.\n Once confirmed, you'll be able to log in with your new account. \n The TASK TECH Team`;
 
@@ -82,32 +80,7 @@ exports.signup = catchAsync(async (req, res, next) => {
 });
 
 exports.verifySignup = catchAsync(async (req, res, next) => {
-  // 1) Get user based on reset code
-  const hashedResetCode = crypto
-    .createHash('sha256')
-    .update(req.body.resetCode)
-    .digest('hex');
-  // 2) Getting token and check of it's there
-  let token;
-  if (
-    req.headers.authorization &&
-    req.headers.authorization.startsWith('Bearer')
-  ) {
-    token = req.headers.authorization.split(' ')[1];
-  } else if (req.cookies.jwt) {
-    token = req.cookies.jwt;
-  }
-
-  if (!token) {
-    return next(
-      new AppError('You are not sign up! Please sign up to get access.', 401)
-    );
-  }
-
-  // 3) Verification token
-  const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-
-  // 4) Check if user still exists
+  // 1) Check if user still exists
   let user = await User.findById(decoded.id);
   if (!user) {
     return next(
@@ -118,7 +91,13 @@ exports.verifySignup = catchAsync(async (req, res, next) => {
     );
   }
 
-  // 4) Check if the reset code is valid and not expired
+  // 2) Get user based on reset code
+  const hashedResetCode = crypto
+    .createHash('sha256')
+    .update(req.body.resetCode)
+    .digest('hex');
+
+  // 3) Check if the reset code is valid and not expired
   user = await User.findOne({
     ResetCode: hashedResetCode,
     ResetExpires: { $gt: Date.now() },
@@ -128,13 +107,13 @@ exports.verifySignup = catchAsync(async (req, res, next) => {
     await User.findByIdAndDelete(decoded.id);
     return next(new AppError('Reset code is invalid or expired'));
   }
-  // 5) Reset code valid
+  // 4) Reset code valid
   user.ResetCode = undefined;
   user.ResetExpires = undefined;
   user.ResetVerified = true;
 
   await user.save({ validateBeforeSave: false });
-  // 6) If everything is ok, generate token
+  // 5) If everything is ok, generate token
   createSendToken(user, 201, req, res);
 });
 
@@ -157,8 +136,7 @@ exports.login = catchAsync(async (req, res, next) => {
 
   // 3) Send it to email
   const date = new Date();
-  const options = { timeZone: 'Africa/Cairo' };
-  const dateString = date.toLocaleString('en-US', options);
+  const dateString = date.toLocaleTimeString('en-EG');
 
   const message = `Hi ${user.name},\n You have loged in ${dateString}. \n The TASK TECH Team`;
 
@@ -187,8 +165,6 @@ exports.protect = catchAsync(async (req, res, next) => {
     req.headers.authorization.startsWith('Bearer')
   ) {
     token = req.headers.authorization.split(' ')[1];
-  } else if (req.cookies.jwt) {
-    token = req.cookies.jwt;
   }
 
   if (!token) {
@@ -216,7 +192,6 @@ exports.protect = catchAsync(async (req, res, next) => {
 
   // Grant access to protected route
   req.user = currentUser;
-  res.locals.user = currentUser;
   next();
 });
 
@@ -234,8 +209,7 @@ exports.forgetPassword = catchAsync(async (req, res, next) => {
   await user.save({ validateBeforeSave: false });
   // Send it to user's email
   const date = new Date();
-  const options = { timeZone: 'Africa/Cairo' };
-  const dateString = date.toLocaleString('en-US', options);
+  const dateString = date.toLocaleTimeString('en-EG');
 
   const message = `Hi ${user.name},\n We received a request to reset the password on your TASK-TECH Account in ${dateString}. \n ${resetCode} \n Enter this code to complete the reset. \n Thanks for helping us keep your account secure.\n The TASK TECH Team`;
 

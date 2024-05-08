@@ -9,7 +9,9 @@ const router = express.Router();
 
 router.route('/signup').post(authController.signup);
 
-router.route('/verfiysignup').post(authController.verifySignup);
+router
+  .route('/verfiysignup')
+  .post(authController.protect, authController.verifySignup);
 
 router.route('/login').post(authController.login);
 

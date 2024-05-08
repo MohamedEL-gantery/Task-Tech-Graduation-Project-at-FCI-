@@ -16,7 +16,7 @@ passport.use(
       const user = await User.findOne({ email: profile.emails[0].value });
       if (!user) {
         // 2) create new user
-        const newuser = await User.create({
+        const newUser = await User.create({
           email: profile.emails[0].value,
           name: profile.displayName,
           googleId: profile.id,
@@ -27,7 +27,7 @@ passport.use(
           refreshToken,
         });
         // 3) If everything is ok, generate token
-        createSendToken(newuser, 201, request, request.res);
+        createSendToken(newUser, 201, request, request.res);
         console.log('user saved successfully to DB');
       } else {
         console.log('user already exists');

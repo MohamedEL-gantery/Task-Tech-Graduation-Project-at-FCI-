@@ -2,6 +2,8 @@ const Message = require('../models/messageModel');
 const catchAsync = require('../utils/catchAsync');
 
 exports.addMessage = catchAsync(async (req, res, next) => {
+  if (req.body.senderId) req.body.senderId = req.user.id;
+
   const newMessage = await Message.create({
     chatId: req.body.chatId,
     senderId: req.body.senderId,
@@ -17,7 +19,10 @@ exports.addMessage = catchAsync(async (req, res, next) => {
 });
 
 exports.getMessages = catchAsync(async (req, res, next) => {
-  const messages = await Message.find({ chatId: req.params.chatId });
+  const messages = await Message.find({ chatId: req.params.chatId }).populate(
+    'senderId',
+    'name photo'
+  );
 
   res.status(200).json({
     status: 'success',
