@@ -2,7 +2,7 @@
 
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=yellow)
 
-![Mongoose](https://img.shields.io/badge/Mongoose-6.7.0-880000?logo=mongoose&logoColor=red)
+![Mongoose](https://img.shields.io/badge/Mongoose-5.13.6-880000?logo=mongoose&logoColor=red)
 
 # Quick Start Node.js Project with JavaScript and Mongoose
 
@@ -65,9 +65,9 @@ The following development tools were used in this project:
 
 Here is a shield for Visual Studio Code (VSCode), styled similarly:
 
-![VSCode](https://img.shields.io/badge/VSCode-1.80.0-007ACC?logo=visual-studio-code&logoColor=white): A lightweight and powerful code editor that provides a great development experience with features like IntelliSense, debugging, and Git integration.
+- ![VSCode](https://img.shields.io/badge/VSCode-1.80.0-007ACC?logo=visual-studio-code&logoColor=white): A lightweight and powerful code editor that provides a great development experience with features like IntelliSense, debugging, and Git integration.
 
-![Postman](https://img.shields.io/badge/Postman-10.15.0-FF6C37?logo=postman&logoColor=white): A popular API testing tool that allows you to test and debug your API endpoints easily.
+- ![Postman](https://img.shields.io/badge/Postman-10.15.0-FF6C37?logo=postman&logoColor=white): A popular API testing tool that allows you to test and debug your API endpoints easily.
 
 - These tools greatly enhance the development experience and facilitate efficient coding, testing, and debugging processes.
 
