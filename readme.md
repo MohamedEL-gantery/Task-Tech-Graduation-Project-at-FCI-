@@ -65,12 +65,16 @@ The following development tools were used in this project:
 
 Here is a shield for Visual Studio Code (VSCode), styled similarly:
 
-- ![VSCode](https://img.shields.io/badge/VSCode-1.80.0-007ACC?logo=visual-studio-code&logoColor=white): A lightweight and powerful code editor that provides a great development experience with features like IntelliSense, debugging, and Git integration.
+![VSCode](https://img.shields.io/badge/VSCode-1.80.0-007ACC?logo=visual-studio-code&logoColor=white)
 
-- ![Postman](https://img.shields.io/badge/Postman-10.15.0-FF6C37?logo=postman&logoColor=white): A popular API testing tool that allows you to test and debug your API endpoints easily.
+- A lightweight and powerful code editor that provides a great development experience with features like IntelliSense, debugging, and Git integration.
 
-- These tools greatly enhance the development experience and facilitate efficient coding, testing, and debugging processes.
+![Postman](https://img.shields.io/badge/Postman-10.15.0-FF6C37?logo=postman&logoColor=white)
 
-- Please ensure that you have Node.js version 18.16.1 installed for optimal compatibility with this project.
+- A popular API testing tool that allows you to test and debug your API endpoints easily.
 
-- Thank you for choosing Task-Tech! We hope you have a productive and enjoyable experience. Happy trading!
+These tools greatly enhance the development experience and facilitate efficient coding, testing, and debugging processes.
+
+Please ensure that you have Node.js version 18.16.1 installed for optimal compatibility with this project.
+
+Thank you for choosing Task-Tech! We hope you have a productive and enjoyable experience. Happy trading!
